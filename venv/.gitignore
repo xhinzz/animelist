@@ -100,3 +100,8 @@ echo venv/ > .gitignore
 echo __pycache__/ >> .gitignore
 echo *.pyc >> .gitignore
 echo app.db >> .gitignore
+__pycache__
+migrations
+venv
+.flaskenv
+app.db
