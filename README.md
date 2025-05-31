@@ -1,5 +1,9 @@
 <p align="center">
-  <img src="[./docs/images/seu_logo.png](https://i.imgur.com/9fGul5a.png)" alt="Logo do Projeto" width="200">
+  <img src="https://i.imgur.com/oDukAro.png" alt="Logo do Projeto" width="300">
+</p>
+
+<p align="center">
+  <img src="https://i.imgur.com/9fGul5a.png" alt="Logo do Projeto" width="750">
 </p>
 
 # Catálogo de Animes e Mangás (AnimeTest)
