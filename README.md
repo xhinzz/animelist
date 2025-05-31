@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="[./docs/images/seu_logo.png](https://i.imgur.com/9fGul5a.png)" alt="Logo do Projeto" width="200">
+</p>
+
 # Catálogo de Animes e Mangás (AnimeTest)
 
 Uma aplicação web construída com Flask para navegar, buscar e catalogar animes e mangás, utilizando a API Jikan. O projeto inclui funcionalidades como contas de usuário, upload de fotos de perfil, lista de itens assistidos, modo escuro e opções de ordenação.
