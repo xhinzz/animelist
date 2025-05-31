@@ -1,0 +1,251 @@
+/* static/css/details_page.css */
+
+body { 
+    line-height: 1.7; /* Um pouco mais de espaçamento para leitura */
+}
+
+.details-page-header {
+    background-color: var(--purple-primary);
+    color: var(--text-on-purple);
+    padding: 15px 20px; /* Ajustar padding */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: var(--box-shadow-medium);
+    position: sticky; /* Mantém no topo ao rolar */
+    top: 0;
+    z-index: 1050; /* Acima do conteúdo, mas abaixo de modais se houver */
+    transition: background-color 0.3s ease;
+}
+
+.details-page-header h1 {
+    font-size: 1.4em;
+    margin: 0;
+    font-weight: 500;
+    flex-grow: 1;
+    text-align: center; /* Centraliza o título */
+    margin-left: auto; /* Para ajudar na centralização com botões de tamanhos diferentes */
+    margin-right: auto;
+}
+
+.details-page-header .back-button-details,
+.details-page-header .close-button-details {
+    color: var(--text-on-purple);
+    text-decoration: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+    background-color: rgba(255, 255, 255, 0.1);
+    transition: background-color 0.2s ease;
+}
+.details-page-header .back-button-details:hover,
+.details-page-header .close-button-details:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+.details-page-header .back-button-details .material-icons {
+    margin-right: 6px;
+}
+.details-page-header .close-button-details .material-icons {
+    margin-left: 6px; /* Ícone de fechar depois do texto */
+}
+
+
+.details-container-main {
+    width: 90%;
+    max-width: 1100px; /* Um pouco maior para mais detalhes */
+    margin: 25px auto;
+    padding: 25px;
+    background-color: var(--background-main-content);
+    border-radius: 8px;
+    box-shadow: var(--box-shadow-light);
+    transition: background-color 0.3s ease;
+}
+
+.loading-message-details, .error-message-details {
+    text-align: center;
+    font-size: 1.2em;
+    padding: 40px 20px;
+    color: var(--text-secondary);
+}
+.error-message-details {
+    color: var(--error-text);
+    background-color: var(--error-bg);
+    border: 1px solid var(--error-border);
+    border-radius: 4px;
+}
+
+#item-details-content .details-grid {
+    display: grid;
+    grid-template-columns: 300px 1fr; /* Coluna da capa fixa, resto flexível */
+    gap: 30px;
+    margin-bottom: 30px;
+    align-items: flex-start; /* Alinha itens no topo do grid */
+}
+
+.details-cover-container img#item-cover {
+    width: 100%;
+    max-width: 300px; /* Garante que não ultrapasse */
+    height: auto;
+    border-radius: 8px;
+    box-shadow: var(--box-shadow-medium);
+    object-fit: cover;
+}
+
+.details-info-major h2#item-title-main {
+    font-size: 2.2em;
+    font-weight: 500;
+    color: var(--purple-dark); /* Usar um roxo mais escuro para destaque */
+    margin-top: 0;
+    margin-bottom: 10px;
+    line-height: 1.2;
+    transition: color 0.3s ease;
+}
+body.dark-mode .details-info-major h2#item-title-main {
+    color: var(--purple-light); /* Roxo mais claro no dark mode */
+}
+
+
+.info-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 15px;
+}
+.info-chips .chip {
+    background-color: var(--purple-light);
+    color: var(--purple-dark);
+    padding: 5px 12px;
+    border-radius: 16px;
+    font-size: 0.85em;
+    font-weight: 500;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+body.dark-mode .info-chips .chip {
+    background-color: var(--purple-dark); /* Ajustado para dark mode */
+    color: var(--text-on-purple);
+}
+
+
+.info-item {
+    margin-bottom: 10px;
+    font-size: 1em;
+    display: flex;
+    align-items: center;
+    color: var(--text-secondary);
+}
+.info-item .material-icons {
+    margin-right: 10px;
+    color: var(--purple-primary);
+    font-size: 20px; /* Ícones um pouco menores */
+}
+.info-item strong {
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-right: 5px;
+}
+
+.details-section {
+    margin-top: 30px;
+    padding-top: 25px;
+    border-top: 1px solid var(--border-color);
+    transition: border-color 0.3s ease;
+}
+.details-section h3 {
+    font-weight: 500;
+    color: var(--purple-primary); /* Usar o roxo primário para títulos de seção */
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 1.3em;
+    display: flex;
+    align-items: center;
+    transition: color 0.3s ease;
+}
+.details-section h3 .material-icons {
+    margin-right: 10px;
+    font-size: 22px;
+}
+
+
+.synopsis-section p {
+    line-height: 1.8; /* Melhorar legibilidade da sinopse */
+    color: var(--text-secondary);
+}
+
+.trailer-section #item-trailer-embed iframe {
+    width: 100%;
+    max-width: 720px; /* Limitar largura máxima do vídeo */
+    aspect-ratio: 16 / 9; /* Mantém proporção */
+    height: auto; /* Altura automática baseada na proporção */
+    border: none;
+    border-radius: 8px;
+    box-shadow: var(--box-shadow-light);
+    display: block; /* Para centralizar com margin auto se necessário */
+    margin: 0 auto;
+}
+.trailer-section #item-trailer-embed p a { /* Estilo para o link "Assistir Trailer" */
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: var(--purple-primary);
+    color: var(--text-on-purple);
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+}
+.trailer-section #item-trailer-embed p a:hover {
+    background-color: var(--purple-dark);
+}
+
+
+.additional-info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Layout responsivo */
+    gap: 15px 25px; /* Espaçamento entre linhas e colunas */
+}
+
+.tag-list-details {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+.tag-list-details li {
+    background-color: var(--background-body); /* Fundo mais sutil para tags */
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+    padding: 6px 12px;
+    border-radius: 16px;
+    font-size: 0.9em;
+    font-weight: 400;
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+body.dark-mode .tag-list-details li {
+    background-color: var(--background-main-content); /* Fundo um pouco mais claro no dark */
+    border-color: var(--border-color-strong);
+}
+
+
+/* Responsividade para a página de detalhes */
+@media (max-width: 768px) {
+    #item-details-content .details-grid {
+        grid-template-columns: 1fr; /* Coluna única em telas menores */
+        text-align: center; /* Centraliza a capa */
+    }
+    .details-cover-container img#item-cover {
+        max-width: 250px; /* Limita tamanho da capa */
+        margin: 0 auto 20px; /* Centraliza e adiciona margem */
+    }
+    .details-info-major h2#item-title-main {
+        font-size: 1.8em;
+        text-align: center;
+    }
+    .info-chips {
+        justify-content: center; /* Centraliza os chips */
+    }
+    .additional-info-grid {
+        grid-template-columns: 1fr; /* Coluna única */
+    }
+}

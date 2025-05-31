@@ -1,0 +1,561 @@
+/* static/css/style.css */
+
+:root {
+    /* Variáveis do Modo Claro (Light Mode) - Cores Primárias */
+    --purple-primary: #673AB7; 
+    --purple-dark: #512DA8;    
+    --purple-light: #D1C4E9;   
+    --text-on-purple: #FFFFFF; 
+
+    /* Cores de Fundo e Texto para Modo Claro */
+    --background-body: #F5F5F5;
+    --background-main-content: #FFFFFF; /* Usado para sidebar, top-bar, cards */
+    --background-input: #FFFFFF; /* Fundo de inputs */
+    --background-hover-light: rgba(0,0,0,0.05);
+    
+    --text-primary: #212121;
+    --text-secondary: #757575;
+    --text-disabled: #BDBDBD;
+
+    /* Cores de Borda e Sombra para Modo Claro */
+    --border-color: #E0E0E0;   
+    --border-color-strong: #BDBDBD;
+    --box-shadow-light: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+    --box-shadow-medium: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+    --box-shadow-heavy: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+
+    --font-family-main: 'Roboto', sans-serif;
+
+    /* Cores de Feedback */
+    --success-bg: #D4EDDA;
+    --success-text: #155724;
+    --success-border: #C3E6CB;
+    --error-bg: #F8D7DA;
+    --error-text: #721C24;
+    --error-border: #F5C6CB;
+    --info-bg: #D1ECF1;
+    --info-text: #0C5460;
+    --info-border: #BEE5EB;
+}
+
+/* --- Variáveis do Modo Escuro (Dark Mode) --- */
+body.dark-mode {
+    --purple-primary: #7E57C2;  /* Roxo um pouco mais claro para contraste em fundo escuro */
+    --purple-dark: #673AB7;
+    --purple-light: #B39DDB;    /* Roxo bem claro para acentos e hovers na sidebar */
+    --text-on-purple: #FFFFFF;
+
+    --background-body: #121212;
+    --background-main-content: #1E1E1E;
+    --background-input: #2C2C2C;
+    --background-hover-light: rgba(255,255,255,0.08);
+    
+    --text-primary: #E0E0E0;
+    --text-secondary: #B0BEC5;
+    --text-disabled: #616161; 
+
+    --border-color: #424242;
+    --border-color-strong: #616161;
+    --box-shadow-light: 0 1px 2px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2);
+    --box-shadow-medium: 0 4px 5px rgba(0,0,0,0.3), 0 1px 10px rgba(0,0,0,0.2);
+    --box-shadow-heavy: 0 8px 10px rgba(0,0,0,0.3), 0 3px 14px rgba(0,0,0,0.2);
+
+    /* Cores de Feedback para Dark Mode */
+    --success-bg: #1E4620;
+    --success-text: #A6D9A0;
+    --success-border: #3A7538;
+    --error-bg: #4A151B; 
+    --error-text: #FFCDD2;
+    --error-border: #721C24; 
+    --info-bg: #0C3C50;
+    --info-text: #A9D5E0;
+    --info-border: #0C5460; 
+}
+
+/* Reset Básico e Estilos Globais */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-family-main);
+    margin: 0;
+    padding: 0;
+    background-color: var(--background-body);
+    color: var(--text-primary);
+    line-height: 1.6;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.app-container {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.sidebar {
+    width: 260px;
+    min-width: 260px;
+    background-color: var(--background-main-content);
+    padding: 20px;
+    box-shadow: var(--box-shadow-medium);
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow-y: auto;
+    border-right: 1px solid var(--border-color);
+    z-index: 100;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+
+.sort-options-container {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Espaço entre label e select */
+    margin-left: 20px; /* Espaço para separar do dropdown de categorias, ajuste se necessário */
+}
+
+.sort-options-container .sort-label {
+    font-size: 0.9em;
+    color: var(--text-secondary);
+    font-weight: 500;
+    white-space: nowrap; /* Evita que o label quebre linha */
+}
+
+#sort-by-select {
+    padding: 8px 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background-color: var(--background-input); /* Usa variável para tema */
+    color: var(--text-primary); /* Usa variável para tema */
+    font-size: 0.9em;
+    font-family: var(--font-family-main);
+    cursor: pointer;
+    min-width: 200px; 
+    height: 38px; 
+    box-sizing: border-box; 
+    transition: border-color 0.2s ease, background-color 0.3s ease, color 0.3s ease;
+}
+
+#sort-by-select:hover {
+    border-color: var(--border-color-strong);
+}
+
+#sort-by-select:focus {
+    outline: none;
+    border-color: var(--purple-primary); /* Completa a linha que você enviou */
+    box-shadow: 0 0 0 2px rgba(var(--purple-primary-rgb, 103, 58, 183), 0.25); /* Usa RGB para opacidade ou uma variável de cor clara */
+}
+
+.user-profile {
+    text-align: center;
+    margin-bottom: 25px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border-color);
+    transition: border-color 0.3s ease;
+}
+.user-profile .avatar {
+    width: 80px;
+    height: 80px;
+    background-color: var(--purple-light);
+    border-radius: 50%;
+    margin: 0 auto 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--purple-primary);
+    font-size: 40px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    overflow: hidden; 
+    border: 2px solid var(--purple-light); 
+}
+.sidebar-avatar-img { /* Estilo para a tag <img> dentro do .avatar */
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Garante que a imagem cubra o espaço sem distorcer */
+    /* border-radius: 50%; não é necessário se o pai .avatar já tem e tem overflow:hidden */
+}
+/* Ajuste específico para avatar no modo escuro */
+body.dark-mode .user-profile .avatar {
+    background-color: var(--purple-dark); 
+    color: var(--purple-light);
+}
+.user-profile .avatar .material-icons { font-size: inherit; }
+.user-profile p { margin: 5px 0; font-size: 0.95em; }
+.user-profile .username { font-weight: 500; color: var(--text-primary); font-size: 1.1em; }
+.user-profile .watched-count { color: var(--text-secondary); font-size: 0.9em; }
+
+.sidebar-nav ul { list-style: none; padding: 0; margin: 0; }
+.sidebar-nav li a {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    text-decoration: none;
+    color: var(--text-secondary);
+    border-radius: 6px;
+    margin-bottom: 8px;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    font-weight: 500;
+}
+.sidebar-nav li a .material-icons {
+    margin-right: 15px;
+    font-size: 22px;
+    color: var(--text-secondary);
+    transition: color 0.2s ease;
+}
+.sidebar-nav li a:hover {
+    background-color: var(--purple-light);
+    color: var(--purple-dark);
+}
+.sidebar-nav li a:hover .material-icons { color: var(--purple-dark); }
+.sidebar-nav li a.active {
+    background-color: var(--purple-primary);
+    color: var(--text-on-purple);
+}
+.sidebar-nav li a.active .material-icons { color: var(--text-on-purple); }
+
+.theme-toggle-container {
+    margin-top: auto;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    justify-content: center;
+    transition: border-color 0.3s ease;
+}
+#theme-toggle-button {
+    background-color: transparent;
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+    padding: 8px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+#theme-toggle-button:hover {
+    background-color: var(--background-hover-light);
+    color: var(--text-primary);
+    border-color: var(--border-color-strong);
+}
+#theme-toggle-button .material-icons { font-size: 24px; }
+
+.main-content-wrapper {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+}
+.top-bar {
+    background-color: var(--background-main-content);
+    padding: 12px 25px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border-color);
+    box-shadow: var(--box-shadow-light);
+    height: 64px;
+    min-height: 64px;
+    flex-shrink: 0;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+.categories-dropdown { position: relative; } 
+.categories-dropdown #category-button {
+    background-color: transparent;
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 0.9em;
+    display: flex;
+    align-items: center;
+    min-width: 180px;
+    justify-content: space-between;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+.categories-dropdown #category-button:hover { background-color: var(--background-hover-light); }
+.categories-dropdown #category-button .material-icons { font-size: 22px; margin-left: 8px; }
+.categories-dropdown #genre-list-dropdown {
+    display: none;
+    position: absolute;
+    top: calc(100% + 5px);
+    left: 0;
+    background-color: var(--background-main-content);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    box-shadow: var(--box-shadow-medium);
+    z-index: 1000;
+    max-height: 300px;
+    overflow-y: auto;
+    width: 250px;
+    list-style: none; 
+    padding: 0;       
+    margin: 0;        
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+.categories-dropdown #genre-list-dropdown li {
+    padding: 10px 15px;
+    cursor: pointer;
+    color: var(--text-primary);
+    font-size: 0.9em;
+    border-bottom: 1px solid var(--border-color);
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+.categories-dropdown #genre-list-dropdown li:last-child { border-bottom: none; }
+.categories-dropdown #genre-list-dropdown li:hover {
+    background-color: var(--purple-light);
+    color: var(--purple-dark);
+}
+
+.search-container { display: flex; align-items: center; }
+.search-container .material-icons { color: var(--text-secondary); margin-right: 10px; font-size: 26px; display: flex; align-items: center;}
+.search-container input[type="text"] {
+    background-color: var(--background-input);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    border-right: none;
+    padding: 9px 12px;
+    border-radius: 4px 0 0 4px;
+    font-size: 0.95em;
+    flex-grow: 1;
+    margin: 0;
+    height: 38px;
+    box-sizing: border-box;
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+.search-container input[type="text"]:focus { outline: none; border-color: var(--purple-primary); z-index: 2; position: relative; }
+.search-container button {
+    background-color: var(--purple-primary);
+    color: var(--text-on-purple);
+    border-top: 1px solid var(--purple-primary);
+    border-right: 1px solid var(--purple-primary);
+    border-bottom: 1px solid var(--purple-primary);
+    border-left: none;
+    padding: 0 15px;
+    border-radius: 0 4px 4px 0;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 0.95em;
+    transition: background-color 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    height: 38px;
+    box-sizing: border-box;
+    flex-shrink: 0;
+}
+.search-container button:hover { background-color: var(--purple-dark); }
+
+.content-area { flex-grow: 1; padding: 25px; overflow-y: auto; }
+.content-area h2#section-title {
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-top: 0;
+    margin-bottom: 25px;
+    font-size: 1.6em;
+    border-bottom: 2px solid var(--purple-primary);
+    padding-bottom: 10px;
+    transition: color 0.3s ease, border-color 0.3s ease;
+}
+
+#item-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 25px; list-style: none; padding: 0; }
+.anime-card {
+    background-color: var(--background-main-content);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 0;
+    text-align: left;
+    box-shadow: var(--box-shadow-light);
+    transition: box-shadow 0.3s cubic-bezier(.25,.8,.25,1), background-color 0.3s ease, border-color 0.3s ease;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+.anime-card:hover { box-shadow: var(--box-shadow-heavy); }
+.anime-card img { width: 100%; height: 280px; object-fit: cover; }
+.anime-card-content { padding: 15px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
+.anime-card h3 { font-size: 1.05em; font-weight: 500; margin: 0 0 8px; line-height: 1.3; min-height: calc(1.3em * 2); color: var(--text-primary); }
+.anime-card p { font-size: 0.9em; color: var(--text-secondary); margin: 0 0 12px; }
+.anime-card .details-button {
+    background-color: var(--purple-primary);
+    color: var(--text-on-purple);
+    border: none;
+    padding: 10px 15px;
+    width: 100%;
+    box-sizing: border-box;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    text-transform: uppercase;
+    font-size: 0.85em;
+    text-align: center;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+    margin-top: auto;
+}
+.anime-card .details-button:hover { background-color: var(--purple-dark); box-shadow: var(--box-shadow-light); }
+
+#loading-indicator { text-align: center; font-size: 1.1em; padding: 30px 10px; color: var(--text-secondary); width: 100%; }
+#error-message {
+    text-align: center;
+    font-size: 0.95em;
+    padding: 15px;
+    margin: 20px 0;
+    border-radius: 4px;
+    color: var(--error-text); 
+    background-color: var(--error-bg); 
+    border: 1px solid var(--error-border); 
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+#item-list li p { padding: 20px; text-align: center; color: var(--text-secondary); }
+
+#pagination { text-align: center; margin-top: 30px; padding-bottom: 20px; }
+#pagination button {
+    padding: 8px 15px;
+    margin: 0 5px;
+    background-color: var(--background-main-content);
+    color: var(--purple-primary);
+    border: 1px solid var(--purple-light);
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 0.9em;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+#pagination button:hover:not(:disabled) {
+    background-color: var(--purple-light);
+    color: var(--purple-dark);
+    border-color: var(--purple-primary);
+}
+#pagination button:disabled {
+    background-color: var(--background-hover-light) !important; 
+    color: var(--text-disabled) !important;
+    border-color: var(--border-color) !important;
+    cursor: not-allowed;
+}
+#pagination button.current-page {
+    background-color: var(--purple-primary);
+    color: var(--text-on-purple);
+    border-color: var(--purple-primary);
+    font-weight: 700;
+}
+#pagination span { margin: 0 10px; color: var(--text-secondary); display: inline-block; vertical-align: middle; line-height: 34px; }
+
+/* Estilos para header de autenticação e flashes (usados em login.html, etc.) */
+.auth-header {
+    background-color: var(--purple-primary);
+    color: var(--text-on-purple);
+    padding: 15px 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: var(--box-shadow-light);
+    transition: background-color 0.3s ease;
+}
+.auth-header h1 a, .auth-header nav a {
+    color: var(--text-on-purple);
+    text-decoration: none;
+    font-weight: 500;
+}
+.auth-header h1 a { font-size: 1.5em; margin: 0; }
+.auth-header nav a { margin-left: 20px; padding: 8px 0; }
+.auth-header nav a:hover { border-bottom: 2px solid var(--purple-light); }
+body.dark-mode .auth-header nav a:hover { border-bottom: 2px solid var(--text-on-purple); }
+
+.auth-page-container { display: flex; flex-direction: column; min-height: 100vh; }
+.auth-content-area {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 20px;
+    background-color: var(--background-body);
+    transition: background-color 0.3s ease;
+}
+
+.flashes { list-style: none; padding: 0; margin: 0 0 20px 0; }
+.flashes .alert { padding: 15px; margin-bottom: 15px; border-radius: 4px; border: 1px solid transparent; font-size: 0.95em; transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease; }
+.flashes .alert-success { background-color: var(--success-bg); color: var(--success-text); border-color: var(--success-border); }
+.flashes .alert-info { background-color: var(--info-bg); color: var(--info-text); border-color: var(--info-border); }
+.flashes .alert-danger { background-color: var(--error-bg); color: var(--error-text); border-color: var(--error-border); }
+
+.profile-container { text-align: left; }
+.profile-info p { margin-bottom: 10px; font-size: 1.05em; color: var(--text-primary); }
+.profile-info strong { font-weight: 500; margin-right: 8px; }
+.profile-info hr { border: none; border-top: 1px solid var(--border-color); margin: 20px 0; transition: border-color 0.3s ease;}
+.button-like {
+    display: inline-block;
+    background-color: var(--purple-primary);
+    color: var(--text-on-purple);
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+    text-align: center;
+}
+.button-like:hover { background-color: var(--purple-dark); }
+
+.anime-card .card-actions {
+    display: flex;
+    gap: 10px; /* Espaço entre botão de detalhes e assistido */
+    margin-top: 10px;
+}
+
+.anime-card .details-button,
+.anime-card .watched-button {
+    flex-grow: 1; /* Faz os botões dividirem o espaço se houver dois */
+    padding: 8px 10px; /* Reduzir um pouco o padding para caberem melhor */
+    font-size: 0.8em; /* Reduzir um pouco a fonte */
+    /* Outros estilos de botão já definidos podem ser herdados ou ajustados */
+}
+
+.watched-button {
+    background-color: var(--background-main-content); /* Cor de fundo "não assistido" */
+    color: var(--purple-primary);
+    border: 1px solid var(--purple-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+.watched-button:hover {
+    background-color: var(--purple-light);
+    color: var(--purple-dark);
+}
+.watched-button.watched { /* Estado "assistido" */
+    background-color: var(--purple-primary);
+    color: var(--text-on-purple);
+    border-color: var(--purple-primary);
+}
+.watched-button.watched:hover {
+    background-color: var(--purple-dark);
+}
+.watched-button .material-icons {
+    font-size: 18px; /* Tamanho do ícone no botão */
+}
+
+/* Adaptações para dark mode nos botões de assistido */
+body.dark-mode .watched-button {
+    background-color: var(--background-main-content);
+    color: var(--purple-light);
+    border: 1px solid var(--border-color-strong);
+}
+body.dark-mode .watched-button:hover {
+    background-color: var(--border-color); /* Um cinza um pouco mais escuro para hover */
+    color: var(--text-on-purple);
+}
+body.dark-mode .watched-button.watched {
+    background-color: var(--purple-light); /* Roxo claro no dark mode para "assistido" */
+    color: var(--purple-dark); /* Texto mais escuro para contraste */
+    border-color: var(--purple-light);
+}
+body.dark-mode .watched-button.watched:hover {
+    background-color: var(--purple-primary);
+}

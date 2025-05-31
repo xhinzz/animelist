@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block title %}Login - Meu Catálogo{% endblock %}
+
+{% block body_class %}page-auth-layout{% endblock %}
+
+{% block head_extra %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth_forms.css') }}">
+{% endblock %}
+
+{% block page_layout_wrapper %}
+<div class="auth-page-container">
+    <header class="auth-header">
+        <h1><a href="{{ url_for('index_page') }}">Meu Catálogo</a></h1>
+        <nav>
+            <a href="{{ url_for('login_page') }}">Login</a>
+            <a href="{{ url_for('register_page') }}">Registrar</a>
+        </nav>
+    </header>
+
+    <main class="auth-content-area">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flashes">
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <div class="auth-container">
+            <h2>Login</h2>
+            <form id="login-form-page">
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Senha:</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <button type="submit">Entrar</button>
+                <p class="form-message" id="login-message" style="display:none;"></p>
+            </form>
+            <p>Não tem uma conta? <a href="{{ url_for('register_page') }}">Registre-se aqui</a>.</p>
+        </div>
+    </main>
+</div>
+{% endblock %}
+
+{% block scripts_extra %}
+<script>
+    document.getElementById('login-form-page').addEventListener('submit', async function(event) {
+        event.preventDefault();
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const messageElement = document.getElementById('login-message');
+        messageElement.style.display = 'none';
+        messageElement.className = 'form-message';
+
+        try {
+            const response = await fetch("{{ url_for('api_login') }}", { 
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            });
+            const result = await response.json();
+            if (response.ok && result.success) {
+                messageElement.textContent = 'Login bem-sucedido! Redirecionando...';
+                messageElement.classList.add('success');
+                messageElement.style.display = 'block';
+                window.location.href = result.redirect || "{{ url_for('index_page') }}";
+            } else {
+                messageElement.textContent = result.message || `Erro (${response.status})`;
+                messageElement.classList.add('error');
+                messageElement.style.display = 'block';
+            }
+        } catch (error) {
+            messageElement.textContent = 'Ocorreu um erro na comunicação com o servidor.';
+            messageElement.classList.add('error');
+            messageElement.style.display = 'block';a
+            console.error("Fetch error:", error);
+        }
+    });
+</script>
+{% endblock %}

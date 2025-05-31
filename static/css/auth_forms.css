@@ -1,0 +1,146 @@
+.profile-container h2 { /* Título "Perfil de ..." */
+    color: var(--purple-primary);
+    margin-bottom: 25px;
+    text-align: center;
+    font-weight: 500;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 15px;
+}
+
+.profile-picture-section {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.profile-picture {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid var(--purple-light); /* Borda temática */
+    box-shadow: var(--box-shadow-medium); /* Sombra para profundidade */
+    margin-bottom: 20px;
+    transition: border-color 0.3s ease;
+}
+
+.upload-form .form-group {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+.upload-form .form-group label { /* Label "Alterar Foto de Perfil:" */
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+.upload-form input[type="file"] {
+    display: block;
+    width: 100%; /* Ocupa a largura disponível */
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background-color: var(--background-input); /* Adapta ao tema */
+    color: var(--text-primary); /* Adapta ao tema */
+    font-size: 0.9em;
+    transition: border-color 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Estilo para o botão de submit do formulário de upload */
+.upload-form .button-submit-profile {
+    background-color: var(--purple-primary);
+    color: var(--text-on-purple);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 0.95em;
+    text-transform: uppercase;
+    transition: background-color 0.2s ease;
+    display: block; /* Ocupa a linha */
+    width: 100%; /* Ocupa toda a largura */
+    margin-top: 10px;
+}
+.upload-form .button-submit-profile:hover {
+    background-color: var(--purple-dark);
+}
+
+
+hr.profile-divider {
+    border: none;
+    border-top: 1px solid var(--border-color);
+    margin: 25px 0;
+    transition: border-color 0.3s ease;
+}
+hr.profile-divider-light { /* Separador mais sutil dentro de seções */
+    border: none;
+    border-top: 1px dashed var(--border-color); /* Tracejado e mais sutil */
+    margin: 15px 0;
+    transition: border-color 0.3s ease;
+}
+
+
+.profile-info {
+    margin-top: 20px;
+    text-align: left; /* Alinha o texto à esquerda */
+}
+
+.profile-info .info-item-profile {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+    padding: 8px 0;
+    border-bottom: 1px solid transparent; /* Prepara para hover sutil */
+    transition: border-color 0.3s ease;
+}
+/* body.light-mode .profile-info .info-item-profile:hover {
+    background-color: var(--background-hover-light);
+}
+body.dark-mode .profile-info .info-item-profile:hover {
+    background-color: var(--background-hover-light);
+} */
+
+
+.profile-info .info-item-profile .material-icons {
+    color: var(--purple-primary);
+    margin-right: 12px; /* Mais espaço para o ícone */
+    font-size: 22px; /* Ícones consistentes */
+}
+
+.profile-info .info-item-profile p {
+    margin: 0;
+    font-size: 1em;
+    color: var(--text-secondary); /* Texto secundário para o valor */
+}
+
+.profile-info .info-item-profile p strong {
+    font-weight: 500;
+    color: var(--text-primary); /* Texto primário para o label */
+    margin-right: 5px;
+}
+.auth-page-container { 
+    display: flex; 
+    flex-direction: column; 
+    min-height: 100vh; 
+    background-color: var(--background-body); /* Usa variável */
+    transition: background-color 0.3s ease;
+}
+.auth-content-area {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 20px;
+    /* background-color já vem do .auth-page-container ou body */
+}
+.auth-container { /* Usado para centralizar forms e o conteúdo do perfil */
+    max-width: 600px; /* Um pouco maior para a página de perfil */
+    margin: 30px auto;
+    padding: 25px 30px;
+    background-color: var(--background-main-content);
+    color: var(--text-primary);
+    border-radius: 8px;
+    box-shadow: var(--box-shadow-medium);
+    transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+}

@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block title %}Perfil de {{ current_user.username }} - Meu Catálogo{% endblock %}
+
+{% block body_class %}page-auth-layout profile-page-layout{% endblock %} {# Classes específicas para esta página #}
+
+{% block head_extra %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth_forms.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/profile_page.css') }}">
+{% endblock %}
+
+{% block page_layout_wrapper %}
+<div class="auth-page-container">
+    <header class="auth-header">
+        <h1><a href="{{ url_for('index_page') }}">Meu Catálogo</a></h1>
+        <nav>
+            <a href="{{ url_for('index_page') }}">Início</a>
+            <a href="{{ url_for('logout_page') }}">Logout</a>
+        </nav>
+    </header>
+
+    <main class="auth-content-area">
+         {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flashes">
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <div class="profile-container auth-container">
+            <h2>Perfil de {{ current_user.username }}</h2>
+
+            <div class="profile-picture-section">
+                <img src="{{ url_for('static', filename='profile_pics/' + (current_user.profile_image_file if current_user.profile_image_file else 'default.jpg')) }}" 
+                     alt="Foto de Perfil de {{ current_user.username }}" class="profile-picture" id="current-profile-pic-display">
+                
+                <form method="POST" action="{{ url_for('upload_profile_picture') }}" enctype="multipart/form-data" class="upload-form">
+                    <div class="form-group">
+                        <label for="profile_pic_upload_input">Alterar Foto de Perfil:</label>
+                        <input type="file" name="profile_pic" id="profile_pic_upload_input" accept="image/png, image/jpeg, image/gif" required>
+                    </div>
+                    <button type="submit" class="button-submit-profile">Enviar Nova Foto</button>
+                </form>
+            </div>
+            
+            <hr class="profile-divider">
+            
+            <div class="profile-info">
+                <div class="info-item-profile">
+                    <span class="material-icons">person_outline</span>
+                    <p><strong>Nome de Usuário:</strong> {{ current_user.username }}</p>
+                </div>
+                <div class="info-item-profile">
+                    <span class="material-icons">email</span>
+                    <p><strong>Email:</strong> {{ current_user.email }}</p>
+                </div>
+                <div class="info-item-profile">
+                    <span class="material-icons">calendar_today</span>
+                    <p><strong>Membro desde:</strong> {{ current_user.created_at.strftime('%d/%m/%Y') if current_user.created_at else 'Data não disponível' }}</p>
+                </div>
+                <hr class="profile-divider-light">
+                <div class="info-item-profile">
+                    <span class="material-icons">movie_filter</span>
+                    <p><strong>Animes Assistidos:</strong> <span id="profile-page-watched-count">{{ current_user.watched_items.filter_by(item_type='anime').count() if current_user.is_authenticated else 0 }}</span></p>
+                </div>
+            </div>
+            
+            <p style="margin-top: 30px; text-align:center;">
+                <a href="{{ url_for('index_page') }}" class="button-like">Voltar à Página Inicial</a>
+            </p>
+        </div>
+    </main>
+</div>
+{% endblock %}
+
+{% block scripts_extra %}
+<script>
+    const profilePicUploadInput = document.getElementById('profile_pic_upload_input');
+    const currentProfilePicDisplay = document.getElementById('current-profile-pic-display');
+    
+    if (profilePicUploadInput && currentProfilePicDisplay) {
+        profilePicUploadInput.onchange = evt => {
+            const [file] = profilePicUploadInput.files;
+            if (file) {
+                currentProfilePicDisplay.src = URL.createObjectURL(file);
+            }
+        }
+    }
+</script>
+{% endblock %}

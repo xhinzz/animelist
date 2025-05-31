@@ -1,0 +1,8 @@
+Flask
+requests
+Flask-CORS
+Flask-SQLAlchemy
+Flask-Migrate
+Flask-Login
+Werkzeug
+python-dotenv

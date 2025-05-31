@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block title %}Página Inicial - Meu Catálogo{% endblock %}
+
+{% block body_class %}page-index-layout{% endblock %}
+
+{% block page_layout_wrapper %}
+<div class="app-container"> 
+    
+    <aside class="sidebar">
+        <div class="user-profile">
+            <div class="avatar" id="sidebar-avatar-container">
+                <img src="{{ url_for('static', filename='profile_pics/default.jpg') }}" alt="Avatar" id="sidebar-profile-pic" class="sidebar-avatar-img">
+            </div>
+            <p class="username" id="profile-username">Visitante</p>
+            <p class="watched-count" id="profile-watched-count">Assistidos: -</p>
+        </div>
+        <nav class="sidebar-nav">
+            <ul id="main-navigation-links">
+                <li><a href="#" id="nav-animes" class="active"><span class="material-icons">movie</span> Animes</a></li>
+                <li><a href="#" id="nav-mangas"><span class="material-icons">book</span> Mangás</a></li>
+                <li><a href="#" id="nav-characters"><span class="material-icons">face</span> Personagens</a></li>
+                {# Links de Login/Logout/Perfil são adicionados dinamicamente pelo main.js #}
+            </ul>
+        </nav>
+        
+        <div class="theme-toggle-container">
+            <button id="theme-toggle-button" title="Alternar tema">
+                <span class="material-icons">brightness_4</span>
+            </button>
+        </div>
+    </aside>
+
+    <div class="main-content-wrapper">
+        <div class="top-bar">
+            <div class="categories-dropdown">
+                <button id="category-button">
+                    <span id="selected-category-name">Categorias Animes</span>
+                    <span class="material-icons">arrow_drop_down</span>
+                </button>
+                <ul id="genre-list-dropdown"></ul>
+            </div>
+            <div class="sort-options-container">
+                <label for="sort-by-select" class="sort-label">Ordenar por:</label>
+                <select id="sort-by-select">
+                    <option value="score" data-order="desc">Nota (Maior primeiro)</option>
+                    <option value="score" data-order="asc">Nota (Menor primeiro)</option>
+                    <option value="title" data-order="asc">Nome (A-Z)</option>
+                    <option value="title" data-order="desc">Nome (Z-A)</option>
+                    <option value="start_date" data-order="desc">Lançamento (Mais Recente)</option>
+                    <option value="start_date" data-order="asc">Lançamento (Mais Antigo)</option>
+                    <option value="members" data-order="desc">Popularidade</option> 
+                </select>
+            </div>
+
+            <div class="search-container">
+                <span class="material-icons">search</span>
+                <input type="text" id="search-input" placeholder="Buscar animes...">
+                <button id="search-button">Buscar</button>
+            </div>
+        </div>
+        <main class="content-area">
+            <h2 id="section-title">Animes Populares</h2>
+            <div id="loading-indicator" style="display: none;">Carregando...</div>
+            <div id="error-message" style="display: none;"></div>
+            <ul id="item-list"></ul>
+            <div id="pagination"></div>
+        </main>
+    </div>
+</div>
+{% endblock %}

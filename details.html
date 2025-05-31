@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalhes do Anime</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --purple-primary: #673AB7;
+            --purple-dark: #512DA8;
+            --purple-light: #D1C4E9;
+            --text-on-purple: #FFFFFF;
+            --background-main: #F5F5F5;
+            --background-content: #FFFFFF;
+            --text-on-white: #212121;
+            --text-secondary: #757575;
+            --border-color: #E0E0E0;
+            --box-shadow-light: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+            --box-shadow-medium: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--background-main);
+            color: var(--text-on-white);
+            line-height: 1.6;
+        }
+        header {
+            background-color: var(--purple-primary);
+            color: var(--text-on-purple);
+            padding: 20px 0;
+            text-align: center;
+            box-shadow: var(--box-shadow-medium);
+        }
+        header h1 {
+            margin: 0;
+            font-weight: 500;
+        }
+        .back-button-container {
+            padding: 15px 5%;
+            text-align: left;
+        }
+
+        .back-button {
+            background-color: var(--purple-primary);
+            color: var(--text-on-purple);
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: 500;
+            transition: background-color 0.2s ease;
+            box-shadow: var(--box-shadow-light);
+        }
+        .back-button:hover {
+            background-color: var(--purple-dark);
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 30px;
+            background-color: var(--background-content);
+            border-radius: 8px;
+            box-shadow: var(--box-shadow-light);
+        }
+        
+        #anime-details-content {
+            display: flex;
+            flex-wrap: wrap; /* Para responsividade */
+            gap: 30px;
+        }
+
+        .anime-cover-container {
+            flex: 0 0 300px; /* Largura fixa para a capa */
+        }
+        .anime-cover-container img {
+            width: 100%;
+            max-width: 300px;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: var(--box-shadow-medium);
+        }
+
+        .anime-info-container {
+            flex: 1;
+            min-width: 300px; /* Para não esmagar em telas menores */
+        }
+        .anime-info-container h2 { /* Título do anime */
+            font-size: 2.2em;
+            font-weight: 500;
+            color: var(--purple-dark);
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+        .info-item {
+            margin-bottom: 12px;
+            font-size: 1.05em;
+        }
+        .info-item strong {
+            font-weight: 500;
+            color: var(--text-on-white);
+        }
+        .info-item span, .info-item a {
+            color: var(--text-secondary);
+        }
+        .info-item a {
+            color: var(--purple-primary);
+            text-decoration: none;
+        }
+        .info-item a:hover {
+            text-decoration: underline;
+        }
+        .synopsis {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+        }
+        .synopsis h3 {
+            font-weight: 500;
+            color: var(--purple-primary);
+            margin-bottom: 10px;
+        }
+        .trailer-container {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+        }
+        .trailer-container h3 {
+             font-weight: 500;
+            color: var(--purple-primary);
+            margin-bottom: 10px;
+        }
+        .trailer-container iframe {
+            width: 100%;
+            min-height: 315px; /* Altura padrão para player 16:9 */
+            border: none;
+            border-radius: 8px;
+            box-shadow: var(--box-shadow-light);
+        }
+        #loading-details, #error-details {
+            text-align: center;
+            font-size: 1.2em;
+            padding: 30px;
+            color: var(--text-secondary);
+        }
+        #error-details {
+            color: #D32F2F;
+        }
+
+        /* Tags de Gêneros/Temas */
+        .tag-list {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .tag-list li {
+            background-color: var(--purple-light);
+            color: var(--purple-dark);
+            padding: 5px 10px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+            .anime-cover-container {
+                flex: 0 0 100%; /* Capa ocupa toda a largura */
+                text-align: center;
+            }
+            .anime-cover-container img {
+                max-width: 250px; /* Limita um pouco em telas pequenas */
+            }
+            .anime-info-container h2 {
+                font-size: 1.8em;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Detalhes do Anime</h1>
+    </header>
+
+    <div class="back-button-container">
+        <a href="index.html" class="back-button">&laquo; Voltar para a Lista</a>
+    </div>
+
+    <div class="container">
+        <div id="loading-details">Carregando detalhes do anime...</div>
+        <div id="error-details" style="display: none;"></div>
+        <div id="anime-details-content" style="display: none;">
+            <div class="anime-cover-container">
+                <img id="anime-cover" src="" alt="Capa do Anime">
+            </div>
+            <div class="anime-info-container">
+                <h2 id="anime-title"></h2>
+                <p class="info-item"><strong>Nota:</strong> <span id="anime-score"></span></p>
+                <p class="info-item"><strong>Episódios:</strong> <span id="anime-episodes"></span></p>
+                <p class="info-item"><strong>Status:</strong> <span id="anime-status"></span></p>
+                <p class="info-item"><strong>Ano:</strong> <span id="anime-year"></span></p>
+                <p class="info-item"><strong>Temporada:</strong> <span id="anime-season"></span></p>
+                <p class="info-item"><strong>Tipo:</strong> <span id="anime-type"></span></p>
+                <p class="info-item"><strong>Fonte:</strong> <span id="anime-source"></span></p>
+                <p class="info-item"><strong>Duração:</strong> <span id="anime-duration"></span></p>
+                <p class="info-item"><strong>Classificação Etária:</strong> <span id="anime-rating"></span></p>
+                <p class="info-item"><strong>Estúdios:</strong> <span id="anime-studios"></span></p>
+                
+                <div class="info-item">
+                    <strong>Gêneros:</strong>
+                    <ul id="anime-genres-tags" class="tag-list"></ul>
+                </div>
+                 <div class="info-item">
+                    <strong>Temas:</strong>
+                    <ul id="anime-themes-tags" class="tag-list"></ul>
+                </div>
+
+                <div class="synopsis">
+                    <h3>Sinopse</h3>
+                    <p id="anime-synopsis"></p>
+                </div>
+                <div class="trailer-container">
+                    <h3>Trailer</h3>
+                    <div id="anime-trailer"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const API_BASE_URL = 'http://127.0.0.1:5000/api';
+            const params = new URLSearchParams(window.location.search);
+            const animeId = params.get('id');
+
+            const loadingElement = document.getElementById('loading-details');
+            const errorElement = document.getElementById('error-details');
+            const contentElement = document.getElementById('anime-details-content');
+
+            if (!animeId) {
+                loadingElement.style.display = 'none';
+                errorElement.textContent = 'ID do anime não fornecido na URL.';
+                errorElement.style.display = 'block';
+                return;
+            }
+
+            async function fetchAnimeDetails() {
+                try {
+                    const response = await fetch(`${API_BASE_URL}/anime/details/${animeId}`);
+                    if (!response.ok) {
+                        throw new Error(`Erro HTTP: ${response.status} - ${response.statusText}`);
+                    }
+                    const result = await response.json();
+                    const anime = result.data;
+
+                    if (!anime || !anime.mal_id) { // Verifica se anime e mal_id existem
+                        throw new Error('Dados do anime não encontrados ou incompletos.');
+                    }
+                    
+                    displayAnimeDetails(anime);
+                    loadingElement.style.display = 'none';
+                    contentElement.style.display = 'flex'; // Alterado para flex para layout correto
+
+                } catch (error) {
+                    console.error('Erro ao buscar detalhes do anime:', error);
+                    loadingElement.style.display = 'none';
+                    errorElement.textContent = `Não foi possível carregar os detalhes do anime. ${error.message}`;
+                    errorElement.style.display = 'block';
+                }
+            }
+
+            function displayAnimeDetails(anime) {
+                document.title = anime.title || 'Detalhes do Anime'; // Atualiza título da página
+                document.getElementById('anime-title').textContent = anime.title || 'Título não disponível';
+                document.getElementById('anime-cover').src = anime.cover_url || 'https://via.placeholder.com/300x450.png?text=Sem+Capa';
+                document.getElementById('anime-cover').alt = `Capa de ${anime.title}`;
+                
+                document.getElementById('anime-score').textContent = anime.score ? `${anime.score.toFixed(1)} (por ${anime.scored_by || 0} usuários)` : 'N/A';
+                document.getElementById('anime-episodes').textContent = anime.episodes || 'N/A';
+                document.getElementById('anime-status').textContent = anime.status || 'N/A';
+                document.getElementById('anime-year').textContent = anime.year || 'N/A';
+                document.getElementById('anime-season').textContent = anime.season ? `${anime.season.charAt(0).toUpperCase() + anime.season.slice(1)}` : 'N/A';
+                document.getElementById('anime-type').textContent = anime.type || 'N/A';
+                document.getElementById('anime-source').textContent = anime.source || 'N/A';
+                document.getElementById('anime-duration').textContent = anime.duration || 'N/A';
+                document.getElementById('anime-rating').textContent = anime.rating || 'N/A';
+                document.getElementById('anime-studios').textContent = anime.studios && anime.studios.length > 0 ? anime.studios.join(', ') : 'N/A';
+                
+                document.getElementById('anime-synopsis').textContent = anime.synopsis || 'Sinopse não disponível.';
+
+                const trailerDiv = document.getElementById('anime-trailer');
+                if (anime.trailer_url && anime.trailer_url.includes("youtube.com/embed")) {
+                    trailerDiv.innerHTML = `<iframe src="${anime.trailer_url.replace('http://', 'https://')}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+                } else if (anime.trailer_url) {
+                     // Se não for um link de embed direto, mas um link para o vídeo no youtube
+                    const youtubeIdMatch = anime.trailer_url.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/);
+                    if (youtubeIdMatch && youtubeIdMatch[1]) {
+                        trailerDiv.innerHTML = `<iframe src="https://www.youtube.com/embed/${youtubeIdMatch[1]}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+                    } else {
+                        trailerDiv.innerHTML = `<p><a href="${anime.trailer_url}" target="_blank">Assistir Trailer</a></p>`;
+                    }
+                }
+                else {
+                    trailerDiv.innerHTML = '<p>Trailer não disponível.</p>';
+                }
+
+                // Tags de Gêneros
+                const genresTagsUl = document.getElementById('anime-genres-tags');
+                genresTagsUl.innerHTML = ''; // Limpa
+                if (anime.genres && anime.genres.length > 0) {
+                    anime.genres.forEach(genreName => {
+                        const li = document.createElement('li');
+                        li.textContent = genreName;
+                        genresTagsUl.appendChild(li);
+                    });
+                } else {
+                    genresTagsUl.innerHTML = '<li>N/A</li>';
+                }
+
+                // Tags de Temas
+                const themesTagsUl = document.getElementById('anime-themes-tags');
+                themesTagsUl.innerHTML = ''; // Limpa
+                if (anime.themes && anime.themes.length > 0) {
+                    anime.themes.forEach(themeName => {
+                        const li = document.createElement('li');
+                        li.textContent = themeName;
+                        themesTagsUl.appendChild(li);
+                    });
+                } else {
+                     themesTagsUl.innerHTML = '<li>N/A</li>';
+                }
+            }
+
+            fetchAnimeDetails();
+        });
+    </script>
+</body>
+</html>
