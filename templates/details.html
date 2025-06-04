@@ -71,7 +71,7 @@
                  <div class="additional-info-grid">
                     <p class="info-item"><span class="material-icons">translate</span> <strong>Título Japonês:</strong> <span id="item-title-japanese"></span></p>
                     <p class="info-item"><span class="material-icons">category</span> <strong>Fonte Original:</strong> <span id="item-source"></span></p>
-                    <p class="info-item" id="item-studios-authors-p"><span class="material-icons">business</span> <strong>Estúdios:</strong> <span id="item-studios-authors"></span></p>
+                    <p class="info-item" id="item-studios-authors-p"><span class="material-icons">business</span> <strong>Estúdios/Autores:</strong> <span id="item-studios-authors"></span></p>
                     <p class="info-item" id="item-season-p" style="display:none;"><span class="material-icons">wb_sunny</span> <strong>Temporada de Exibição:</strong> <span id="item-season"></span></p>
                     <p class="info-item"><span class="material-icons">event</span> <strong>Período de Exibição/Publicação:</strong> <span id="item-aired-string"></span></p>
                     <p class="info-item"><span class="material-icons">people</span> <strong>Popularidade:</strong> #<span id="item-popularity"></span></p>
@@ -91,36 +91,45 @@
                 <h3><span class="material-icons">groups</span> Demografia</h3>
                 <ul id="item-demographics-tags" class="tag-list-details"></ul>
             </div>
+
+            {# === NOVA SEÇÃO DE RECOMENDAÇÕES === #}
+            <div class="details-section recommendations-section" id="item-recommendations-wrapper" style="display:none;">
+                <h3><span class="material-icons">thumb_up_alt</span> Animes Parecidos (Recomendações)</h3>
+                <ul class="recommendations-list" id="item-recommendations-list">
+                    {# Recomendações serão inseridas aqui pelo JavaScript #}
+                </ul>
+                <p id="no-recommendations-message" style="display:none; text-align: center; color: var(--text-secondary);">Nenhuma recomendação disponível para este item.</p>
+            </div>
+            <div class="details-section main-characters-section" id="main-characters-wrapper" style="display:none;">
+                <h3><span class="material-icons">people_alt</span> Personagens Principais</h3>
+                <ul class="characters-list" id="main-characters-list">
+                    {# Personagens serão inseridos aqui pelo JavaScript #}
+                </ul>
+                <p id="no-main-characters-message" style="display:none; text-align: center; color: var(--text-secondary);">
+                    Nenhum personagem principal listado para este item.
+                </p>
+            </div>
         </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // DarkMode
+            // --- LÓGICA DO TEMA (DARK MODE) ---
             const THEME_KEY_DETAILS = 'user-theme-preference';
             function applyDetailsTheme(theme) {
-                if (theme === 'dark') {
-                    document.body.classList.add('dark-mode');
-                } else {
-                    document.body.classList.remove('dark-mode');
-                }
+                if (theme === 'dark') { document.body.classList.add('dark-mode'); } 
+                else { document.body.classList.remove('dark-mode'); }
             }
             function loadDetailsTheme() {
                 let preferredTheme = null;
                 try { preferredTheme = localStorage.getItem(THEME_KEY_DETAILS); } catch (e) {}
                 const systemPrefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-                if (preferredTheme) {
-                    applyDetailsTheme(preferredTheme);
-                } else if (systemPrefersDark) {
-                    applyDetailsTheme('dark');
-                } else {
-                    applyDetailsTheme('light'); 
-                }
+                if (preferredTheme) applyDetailsTheme(preferredTheme);
+                else if (systemPrefersDark) applyDetailsTheme('dark');
+                else applyDetailsTheme('light'); 
             }
             loadDetailsTheme();
-
-            // Detalhes do item
-            const API_BASE_URL_DETAILS = '/api';
+            const API_BASE_URL_DETAILS = '/api'; 
             const params = new URLSearchParams(window.location.search);
             const itemId = params.get('id');
             const itemType = params.get('type') || 'anime'; 
@@ -130,15 +139,134 @@
             const contentElement = document.getElementById('item-details-content');
             const pageMainTitleElement = document.getElementById('details-main-title');
 
+            const charactersWrapper = document.getElementById('main-characters-wrapper');            
+            const recommendationsWrapper = document.getElementById('item-recommendations-wrapper');
+            const recommendationsListElement = document.getElementById('item-recommendations-list');
+            const noRecommendationsMessage = document.getElementById('no-recommendations-message');
+
             if (!itemId) {
                 loadingElement.style.display = 'none';
                 errorElement.textContent = 'ID do item não fornecido na URL.';
                 errorElement.style.display = 'block';
                 pageMainTitleElement.textContent = "Erro";
+                if(recommendationsWrapper) recommendationsWrapper.style.display = 'none';
                 return;
             }
 
-            async function fetchItemDetails() {
+            async function fetchAndDisplayMainCharacters(currentAnimeId) {
+                if (!charactersWrapper) return;
+
+                const charactersListElement = document.getElementById('main-characters-list');
+                const noCharactersMessage = document.getElementById('no-main-characters-message');
+
+                if (!charactersListElement || !noCharactersMessage) {
+                    console.warn("Elementos da lista de personagens não encontrados.");
+                    charactersWrapper.style.display = 'none'; 
+                    return;
+                }
+                console.log(`[DETAILS.JS] Buscando personagens principais para anime ID: ${currentAnimeId}`);
+                try {
+                    const response = await fetch(`${API_BASE_URL_DETAILS}/anime/${currentAnimeId}/main_characters`);
+                    if (!response.ok) {
+                        const errorData = await response.json().catch(() => ({}));
+                        console.error(`Erro HTTP ${response.status} ao buscar personagens: ${errorData.message || response.statusText}`);
+                        charactersWrapper.style.display = 'block';
+                        noCharactersMessage.textContent = 'Não foi possível carregar os personagens.';
+                        noCharactersMessage.style.display = 'block';
+                        charactersListElement.innerHTML = '';
+                        return;
+                    }
+                    const result = await response.json();
+
+                    if (result.success && result.data && result.data.length > 0) {
+                        charactersWrapper.style.display = 'block';
+                        noCharactersMessage.style.display = 'none';
+                        charactersListElement.innerHTML = ''; 
+
+                        result.data.slice(0, 10).forEach(char => { // Limita a 10 personagens
+                            const charCard = document.createElement('li');
+                            charCard.classList.add('character-card'); 
+                            const characterMalUrl = `https://myanimelist.net/character/${char.mal_id}`; 
+
+                            charCard.innerHTML = `
+                                <a href="${characterMalUrl}" target="_blank" title="${char.name} (${char.role})">
+                                    <img src="${char.image_url || 'https://via.placeholder.com/100x150.png?text=N/A'}" alt="Imagem de ${char.name}">
+                                    <p class="character-name">${char.name}</p>
+                                    <p class="character-role">${char.role}</p>
+                                </a>
+                            `;
+                            charactersListElement.appendChild(charCard);
+                        });
+                    } else {
+                        console.log("Nenhum personagem principal encontrado ou dados ausentes via API.");
+                        charactersWrapper.style.display = 'block';
+                        noCharactersMessage.style.display = 'block';
+                        noCharactersMessage.textContent = 'Nenhum personagem principal listado para este anime.';
+                        if(charactersListElement) charactersListElement.innerHTML = '';
+                    }
+                } catch (error) {
+                    console.error("Erro na função fetchAndDisplayMainCharacters:", error);
+                    if(charactersWrapper) charactersWrapper.style.display = 'block';
+                    if(noCharactersMessage) {
+                        noCharactersMessage.textContent = 'Erro ao carregar personagens.';
+                        noCharactersMessage.style.display = 'block';
+                    }
+                    if(charactersListElement) charactersListElement.innerHTML = '';
+                }
+            }
+
+            // Função para buscar e exibir recomendações
+            async function fetchAndDisplayRecommendations(animeMalId) {
+                if (!recommendationsListElement || !recommendationsWrapper || !noRecommendationsMessage) {
+                    console.warn("Elementos da seção de recomendação não encontrados.");
+                    return;
+                }
+                console.log(`Buscando recomendações para anime ID: ${animeMalId}`);
+                try {
+                    const response = await fetch(`${API_BASE_URL_DETAILS}/anime/${animeMalId}/recommendations`);
+                    if (!response.ok) {
+                        console.error(`Erro HTTP ao buscar recomendações: ${response.status}`);
+                        recommendationsWrapper.style.display = 'block';
+                        noRecommendationsMessage.style.display = 'block';
+                        recommendationsListElement.innerHTML = '';
+                        return;
+                    }
+                    const result = await response.json();
+
+                    if (result.success && result.data && result.data.length > 0) {
+                        recommendationsWrapper.style.display = 'block';
+                        noRecommendationsMessage.style.display = 'none';
+                        recommendationsListElement.innerHTML = ''; 
+
+                        result.data.slice(0, 8).forEach(rec => { // Limita a 6 recomendações de animes
+                            const recCard = document.createElement('li');
+                            recCard.classList.add('recommendation-card');
+                            const detailUrl = `/details?id=${rec.mal_id}&type=anime`;
+
+                            recCard.innerHTML = `
+                                <a href="${detailUrl}" target="_blank" title="${rec.title}">
+                                    <img src="${rec.cover_url || 'https://via.placeholder.com/150x210.png?text=N/A'}" alt="Capa de ${rec.title}">
+                                    <p>${rec.title}</p>
+                                </a>
+                            `;
+                            recommendationsListElement.appendChild(recCard);
+                        });
+                    } else {
+                        console.log("Nenhuma recomendação encontrada ou dados ausentes.");
+                        recommendationsWrapper.style.display = 'block';
+                        noRecommendationsMessage.style.display = 'block';
+                        recommendationsListElement.innerHTML = '';
+                    }
+                } catch (error) {
+                    console.error("Erro ao buscar ou exibir recomendações:", error);
+                    recommendationsWrapper.style.display = 'block';
+                    noRecommendationsMessage.textContent = 'Erro ao carregar recomendações.';
+                    noRecommendationsMessage.style.display = 'block';
+                    recommendationsListElement.innerHTML = '';
+                }
+            }
+            // Função principal para buscar detalhes do item
+            async function fetchItemPrimaryDetails() {
                 try {
                     const response = await fetch(`${API_BASE_URL_DETAILS}/${itemType}/details/${itemId}`);
                     if (!response.ok) {
@@ -151,9 +279,17 @@
                         throw new Error('Dados do item não encontrados ou incompletos.');
                     }
                     
-                    displayItemDetails(item);
+                    displayItemDetails(item); 
                     loadingElement.style.display = 'none';
-                    contentElement.style.display = 'block';
+                    contentElement.style.display = 'block'; 
+
+                    // Chama as recomendações APÓS carregar os detalhes principais, APENAS se for um anime
+                    if (itemType === 'anime' && item.mal_id) {
+                        fetchAndDisplayRecommendations(item.mal_id);
+                        fetchAndDisplayMainCharacters(item.mal_id);
+                    } else {
+                         if(recommendationsWrapper) recommendationsWrapper.style.display = 'none'; // Esconde seção se não for anime
+                    }
 
                 } catch (error) {
                     console.error(`Erro ao buscar detalhes do ${itemType}:`, error);
@@ -161,17 +297,15 @@
                     errorElement.textContent = `Não foi possível carregar os detalhes. ${error.message}`;
                     errorElement.style.display = 'block';
                     pageMainTitleElement.textContent = "Erro ao Carregar";
+                    if(recommendationsWrapper) recommendationsWrapper.style.display = 'none';
                 }
             }
 
             function displayItemDetails(item) {
                 document.title = item.title || `Detalhes de ${itemType}`;
                 pageMainTitleElement.textContent = item.title || `Detalhes de ${itemType}`;
-
                 document.getElementById('item-title-main').textContent = item.title || 'Título Indisponível';
                 document.getElementById('item-cover').src = item.cover_url || 'https://via.placeholder.com/300x450.png?text=Sem+Capa';
-                document.getElementById('item-cover').alt = `Capa de ${item.title}`;
-                
                 document.getElementById('item-score').textContent = item.score ? `${item.score.toFixed(1)} (por ${item.scored_by || 0} usuários)` : 'N/A';
                 
                 const episodesChaptersP = document.getElementById('item-episodes-chapters-p');
@@ -184,7 +318,10 @@
                 const ratingP = document.getElementById('item-rating-p');
                 const trailerWrapper = document.getElementById('item-trailer-wrapper');
 
-                if (itemType === 'anime') {
+                const isAnime = (itemType === 'anime' || itemType === 'animes');
+                const isManga = (itemType === 'manga' || itemType === 'mangas');
+
+                if (isAnime) {
                     episodesChaptersP.querySelector('strong').textContent = 'Episódios:';
                     episodesChaptersSpan.textContent = item.episodes_or_chapters || 'N/A';
                     durationVolumesP.querySelector('strong').textContent = 'Duração:';
@@ -194,9 +331,8 @@
                     studiosAuthorsSpan.textContent = item.studios_or_authors && item.studios_or_authors.length > 0 ? item.studios_or_authors.join(', ') : 'N/A';
                     if(item.season) { seasonP.style.display = 'flex'; document.getElementById('item-season').textContent = `${item.season.charAt(0).toUpperCase() + item.season.slice(1)}`; } else { seasonP.style.display = 'none'; }
                     if(item.rating) { ratingP.style.display = 'flex'; document.getElementById('item-rating').textContent = item.rating; } else { ratingP.style.display = 'none'; }
-                    if(item.trailer_url) { trailerWrapper.style.display = 'block'; setupTrailer(item.trailer_url); } else { trailerWrapper.style.display = 'none';}
-
-                } else if (itemType === 'manga') {
+                    if(item.trailer_url && trailerWrapper) { trailerWrapper.style.display = 'block'; setupTrailer(item.trailer_url); } else if(trailerWrapper) { trailerWrapper.style.display = 'none';}
+                } else if (isManga) {
                     episodesChaptersP.querySelector('strong').textContent = 'Capítulos:';
                     episodesChaptersSpan.textContent = item.episodes_or_chapters || 'N/A';
                     durationVolumesP.querySelector('strong').textContent = 'Volumes:';
@@ -204,68 +340,58 @@
                     durationVolumesP.style.display = 'flex';
                     studiosAuthorsP.querySelector('strong').textContent = 'Autores:';
                     studiosAuthorsSpan.textContent = item.studios_or_authors && item.studios_or_authors.length > 0 ? item.studios_or_authors.map(a => a.name + (a.role ? ` (${a.role})` : '')).join(', ') : 'N/A';
-                    seasonP.style.display = 'none';
-                    ratingP.style.display = 'none';
-                    trailerWrapper.style.display = 'none';
-                } else if (itemType === 'character') {
-
-                    episodesChaptersP.style.display = 'none';
-                    durationVolumesP.style.display = 'none';
-                    document.getElementById('item-score-container').style.display = 'none'; 
-                    studiosAuthorsP.style.display = 'none';
-                    seasonP.style.display = 'none';
-                    ratingP.style.display = 'none';
-                    trailerWrapper.style.display = 'none';
+                    if(seasonP) seasonP.style.display = 'none';
+                    if(ratingP) ratingP.style.display = 'none';
+                    if(trailerWrapper) trailerWrapper.style.display = 'none';
                 }
-
-                document.getElementById('item-status-chip').textContent = item.status || 'N/A';
-                document.getElementById('item-year-chip').textContent = item.year || 'N/A';
-                document.getElementById('item-type-chip').textContent = item.type || 'N/A';
-
-                document.getElementById('item-title-japanese').textContent = item.title_japanese || 'N/A';
-                document.getElementById('item-source').textContent = item.source || 'N/A';
-                document.getElementById('item-aired-string').textContent = item.aired_string || 'N/A';
-                document.getElementById('item-popularity').textContent = item.popularity || 'N/A';
-                document.getElementById('item-rank').textContent = item.rank || 'N/A';
-                document.getElementById('item-synopsis').textContent = item.synopsis || 'Sinopse não disponível.';
-
-                function setupTrailer(trailerUrl) {
-                    const trailerDiv = document.getElementById('item-trailer-embed');
-                    if (trailerUrl && trailerUrl.includes("youtube.com/embed")) {
-                        trailerDiv.innerHTML = `<iframe src="${trailerUrl.replace('http://', 'https://')}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
-                    } else if (trailerUrl) {
-                        const youtubeIdMatch = trailerUrl.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/);
-                        if (youtubeIdMatch && youtubeIdMatch[1]) {
-                             trailerDiv.innerHTML = `<iframe src="https://www.youtube.com/embed/${youtubeIdMatch[1]}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
-                        } else {
-                           trailerDiv.innerHTML = `<p><a href="${trailerUrl}" target="_blank" rel="noopener noreferrer">Assistir Trailer</a></p>`;
-                        }
-                    } else {
-                        trailerDiv.innerHTML = '<p>Trailer não disponível.</p>';
-                    }
-                }
+                if(document.getElementById('item-status-chip')) document.getElementById('item-status-chip').textContent = item.status || 'N/A';
+                if(document.getElementById('item-year-chip')) document.getElementById('item-year-chip').textContent = item.year || 'N/A';
+                if(document.getElementById('item-type-chip')) document.getElementById('item-type-chip').textContent = item.type || 'N/A';
+                if(document.getElementById('item-title-japanese')) document.getElementById('item-title-japanese').textContent = item.title_japanese || 'N/A';
+                if(document.getElementById('item-source')) document.getElementById('item-source').textContent = item.source || 'N/A';
+                if(document.getElementById('item-aired-string')) document.getElementById('item-aired-string').textContent = item.aired_string || 'N/A';
+                if(document.getElementById('item-popularity')) document.getElementById('item-popularity').textContent = item.popularity || 'N/A';
+                if(document.getElementById('item-rank')) document.getElementById('item-rank').textContent = item.rank || 'N/A';
+                if(document.getElementById('item-synopsis')) document.getElementById('item-synopsis').textContent = item.synopsis || 'Sinopse não disponível.';
                 
-
-                function populateTags(ulElementId, tagsArray) {
-                    const ul = document.getElementById(ulElementId);
-                    if (!ul) return;
-                    ul.innerHTML = ''; 
-                    if (tagsArray && tagsArray.length > 0) {
-                        tagsArray.forEach(tagName => {
-                            const li = document.createElement('li');
-                            li.textContent = tagName;
-                            ul.appendChild(li);
-                        });
+            function setupTrailer(trailerUrl) {
+                const trailerDiv = document.getElementById('item-trailer-embed');
+                if (!trailerDiv) return;
+                if (trailerUrl && trailerUrl.includes("youtube.com/embed/")) { 
+                    trailerDiv.innerHTML = `<iframe src="${trailerUrl}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+                } else if (trailerUrl) { 
+                    const youtubeIdMatch = trailerUrl.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/);
+                    if (youtubeIdMatch && youtubeIdMatch[1]) {
+                         trailerDiv.innerHTML = `<iframe src="https://www.youtube.com/embed/${youtubeIdMatch[1]}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
                     } else {
-                        ul.innerHTML = '<li>N/A</li>';
+                       trailerDiv.innerHTML = `<p><a href="${trailerUrl}" target="_blank" rel="noopener noreferrer">Assistir Trailer</a></p>`;
                     }
+                } else {
+                    trailerDiv.innerHTML = '<p>Trailer não disponível.</p>';
                 }
+            }
+
+            function populateTags(ulElementId, tagsArray) {
+                const ul = document.getElementById(ulElementId);
+                if (!ul) return;
+                ul.innerHTML = ''; 
+                if (tagsArray && tagsArray.length > 0) {
+                    tagsArray.forEach(tagName => {
+                        const li = document.createElement('li');
+                        li.textContent = tagName;
+                        ul.appendChild(li);
+                    });
+                } else {
+                    ul.innerHTML = '<li>N/A</li>';
+                }
+            }
+
                 populateTags('item-genres-tags', item.genres);
                 populateTags('item-themes-tags', item.themes);
                 populateTags('item-demographics-tags', item.demographics);
             }
-
-            fetchItemDetails();
+            
+            fetchItemPrimaryDetails();
         });
     </script>
 </body>

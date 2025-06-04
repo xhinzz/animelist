@@ -62,7 +62,66 @@ body {
     box-shadow: var(--box-shadow-light);
     transition: background-color 0.3s ease;
 }
+.recommendations-list {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    /* Mostra mais cards por linha, eles são menores */
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); 
+    gap: 15px; /* Espaçamento entre os cards de recomendação */
+}
 
+.recommendation-card {
+    background-color: var(--background-body); /* Fundo um pouco diferente do card principal da página */
+    border-radius: 6px;
+    overflow: hidden; /* Para cantos arredondados na imagem */
+    text-align: center;
+    border: 1px solid var(--border-color);
+    transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+}
+
+/* Ajuste para modo escuro se --background-body for muito escuro para os cards */
+body.dark-mode .recommendation-card {
+    background-color: var(--background-main-content); /* Pode usar a mesma cor do card principal */
+    border-color: var(--border-color-strong);
+}
+
+.recommendation-card a {
+    text-decoration: none;
+    color: var(--text-primary);
+    display: block; /* Faz o link preencher o card */
+}
+
+.recommendation-card img {
+    width: 100%;
+    height: 180px; /* Altura para as capas das recomendações */
+    object-fit: cover;
+    display: block; /* Remove espaço extra abaixo da imagem */
+    border-bottom: 1px solid var(--border-color); /* Linha sutil abaixo da imagem */
+    transition: border-color 0.3s ease;
+}
+
+.recommendation-card p { /* Título da recomendação */
+    font-size: 0.85em;
+    padding: 10px 5px; /* Mais padding vertical */
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: 500;
+}
+
+.recommendation-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--box-shadow-medium);
+}
+
+#no-recommendations-message {
+    color: var(--text-secondary);
+    text-align: center;
+    padding: 20px 0; /* Adiciona padding vertical */
+    font-style: italic;
+}
 .loading-message-details, .error-message-details {
     text-align: center;
     font-size: 1.2em;
@@ -249,3 +308,75 @@ body.dark-mode .tag-list-details li {
         grid-template-columns: 1fr; /* Coluna única */
     }
 }
+
+.main-characters-section {
+    /* Herda estilos de .details-section */
+}
+.characters-list {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    /* Ajuste minmax para o tamanho desejado dos cards de personagem */
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); 
+    gap: 15px;
+}
+
+.character-card {
+    background-color: var(--background-body);
+    border-radius: 6px;
+    overflow: hidden;
+    text-align: center;
+    border: 1px solid var(--border-color);
+    transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+    display: flex; /* Para alinhar itens internos se necessário */
+    flex-direction: column; /* Empilha imagem sobre texto */
+}
+body.dark-mode .character-card {
+    background-color: var(--background-main-content);
+    border-color: var(--border-color-strong);
+}
+
+.character-card a {
+    text-decoration: none;
+    color: var(--text-primary);
+    display: flex; /* Faz o link preencher e ser flex container */
+    flex-direction: column;
+    height: 100%; /* Faz o link ocupar todo o card */
+}
+
+.character-card img {
+    width: 100%;
+    height: 150px; /* Altura para as imagens dos personagens */
+    object-fit: cover; /* Tenta cobrir, pode usar 'contain' se preferir ver a imagem toda */
+    object-position: top center; /* Foca no topo da imagem, bom para retratos */
+    display: block;
+    background-color: var(--border-color); /* Cor de fundo sutil para imagens com transparência */
+}
+
+.character-card p {
+    margin: 0;
+    padding: 4px; /* Reduzido para nomes pequenos */
+}
+
+.character-card p.character-name {
+    font-size: 0.8em; 
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-top: 6px; /* Espaço acima do nome */
+}
+.character-card p.character-role {
+    font-size: 0.7em;
+    color: var(--text-secondary);
+    padding-bottom: 6px; /* Espaço abaixo do papel */
+}
+
+.character-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--box-shadow-medium);
+}
+
+#no-main-characters-message {
+}
+

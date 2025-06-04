@@ -14,8 +14,6 @@
     {% block page_layout_wrapper %}
         {}
     {% endblock %}
-
-    {# Script JS principal carregado no final para melhor performance #}
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
     {% block scripts_extra %}{% endblock %}
 </body>

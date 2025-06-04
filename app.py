@@ -378,5 +378,31 @@ def api_search_items(frontend_item_type):
     if items is not None: return jsonify({"data": items, "pagination": pagination_info})
     return jsonify({"error": f"Não foi possível buscar {jikan_type}s para '{query}'. Verifique o console do servidor para detalhes."}), 500
 
+@app.route('/api/anime/<int:anime_id>/recommendations', methods=['GET'])
+def api_get_anime_recommendations(anime_id):
+    recommendations = jikan_client.get_anime_recommendations(anime_id) 
+
+    if recommendations is not None:
+        return jsonify({'success': True, 'data': recommendations})
+    else:
+        return jsonify({'success': True, 'data': [], 'message': f'Nenhuma recomendação encontrada ou erro ao buscar para anime ID {anime_id}.'})
+
+    if recommendations is not None and len(recommendations) > 0:
+        return jsonify({'success': True, 'data': recommendations})
+    elif recommendations is not None: 
+        return jsonify({'success': True, 'data': [], 'message': f'Nenhuma recomendação encontrada para anime ID {anime_id}.'})
+    else:  
+        return jsonify({'success': False, 'message': f'Erro ao buscar recomendações para anime ID {anime_id}.'}), 500 
+
+@app.route('/api/anime/<int:anime_id>/main_characters', methods=['GET'])
+def api_get_anime_main_characters(anime_id):
+    
+    print(f"[APP.PY /main_characters] Buscando personagens para anime ID: {anime_id}")
+    characters = jikan_client.get_anime_main_characters(anime_id) 
+    
+    if characters is not None: 
+        return jsonify({'success': True, 'data': characters})
+    else: 
+        return jsonify({'success': False, 'message': f'Erro crítico ao buscar personagens para anime ID {anime_id}.'}), 500
 if __name__ == '__main__':
     app.run(port=5000)

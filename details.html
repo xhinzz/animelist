@@ -3,341 +3,393 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detalhes do Anime</title>
+    <title>Detalhes</title> {# Será atualizado por JS #}
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --purple-primary: #673AB7;
-            --purple-dark: #512DA8;
-            --purple-light: #D1C4E9;
-            --text-on-purple: #FFFFFF;
-            --background-main: #F5F5F5;
-            --background-content: #FFFFFF;
-            --text-on-white: #212121;
-            --text-secondary: #757575;
-            --border-color: #E0E0E0;
-            --box-shadow-light: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
-            --box-shadow-medium: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
-        }
-
-        body {
-            font-family: 'Roboto', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: var(--background-main);
-            color: var(--text-on-white);
-            line-height: 1.6;
-        }
-        header {
-            background-color: var(--purple-primary);
-            color: var(--text-on-purple);
-            padding: 20px 0;
-            text-align: center;
-            box-shadow: var(--box-shadow-medium);
-        }
-        header h1 {
-            margin: 0;
-            font-weight: 500;
-        }
-        .back-button-container {
-            padding: 15px 5%;
-            text-align: left;
-        }
-
-        .back-button {
-            background-color: var(--purple-primary);
-            color: var(--text-on-purple);
-            padding: 10px 20px;
-            text-decoration: none;
-            border-radius: 4px;
-            font-weight: 500;
-            transition: background-color 0.2s ease;
-            box-shadow: var(--box-shadow-light);
-        }
-        .back-button:hover {
-            background-color: var(--purple-dark);
-        }
-
-        .container {
-            width: 90%;
-            max-width: 1000px;
-            margin: 20px auto;
-            padding: 30px;
-            background-color: var(--background-content);
-            border-radius: 8px;
-            box-shadow: var(--box-shadow-light);
-        }
-        
-        #anime-details-content {
-            display: flex;
-            flex-wrap: wrap; /* Para responsividade */
-            gap: 30px;
-        }
-
-        .anime-cover-container {
-            flex: 0 0 300px; /* Largura fixa para a capa */
-        }
-        .anime-cover-container img {
-            width: 100%;
-            max-width: 300px;
-            height: auto;
-            border-radius: 8px;
-            box-shadow: var(--box-shadow-medium);
-        }
-
-        .anime-info-container {
-            flex: 1;
-            min-width: 300px; /* Para não esmagar em telas menores */
-        }
-        .anime-info-container h2 { /* Título do anime */
-            font-size: 2.2em;
-            font-weight: 500;
-            color: var(--purple-dark);
-            margin-top: 0;
-            margin-bottom: 15px;
-        }
-        .info-item {
-            margin-bottom: 12px;
-            font-size: 1.05em;
-        }
-        .info-item strong {
-            font-weight: 500;
-            color: var(--text-on-white);
-        }
-        .info-item span, .info-item a {
-            color: var(--text-secondary);
-        }
-        .info-item a {
-            color: var(--purple-primary);
-            text-decoration: none;
-        }
-        .info-item a:hover {
-            text-decoration: underline;
-        }
-        .synopsis {
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 1px solid var(--border-color);
-        }
-        .synopsis h3 {
-            font-weight: 500;
-            color: var(--purple-primary);
-            margin-bottom: 10px;
-        }
-        .trailer-container {
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 1px solid var(--border-color);
-        }
-        .trailer-container h3 {
-             font-weight: 500;
-            color: var(--purple-primary);
-            margin-bottom: 10px;
-        }
-        .trailer-container iframe {
-            width: 100%;
-            min-height: 315px; /* Altura padrão para player 16:9 */
-            border: none;
-            border-radius: 8px;
-            box-shadow: var(--box-shadow-light);
-        }
-        #loading-details, #error-details {
-            text-align: center;
-            font-size: 1.2em;
-            padding: 30px;
-            color: var(--text-secondary);
-        }
-        #error-details {
-            color: #D32F2F;
-        }
-
-        /* Tags de Gêneros/Temas */
-        .tag-list {
-            list-style: none;
-            padding: 0;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-        .tag-list li {
-            background-color: var(--purple-light);
-            color: var(--purple-dark);
-            padding: 5px 10px;
-            border-radius: 12px;
-            font-size: 0.85em;
-            font-weight: 500;
-        }
-
-        @media (max-width: 768px) {
-            .anime-cover-container {
-                flex: 0 0 100%; /* Capa ocupa toda a largura */
-                text-align: center;
-            }
-            .anime-cover-container img {
-                max-width: 250px; /* Limita um pouco em telas pequenas */
-            }
-            .anime-info-container h2 {
-                font-size: 1.8em;
-                text-align: center;
-            }
-        }
-    </style>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/details_page.css') }}">
 </head>
 <body>
-    <header>
-        <h1>Detalhes do Anime</h1>
+
+    <header class="details-page-header">
+        <a href="javascript:history.back()" class="back-button-details" title="Voltar">
+            <span class="material-icons">arrow_back</span> Voltar
+        </a>
+        <h1 id="details-main-title">Detalhes</h1>
+        <a href="javascript:window.close();" class="close-button-details" title="Fechar Aba">
+            Fechar <span class="material-icons">close</span>
+        </a>
     </header>
 
-    <div class="back-button-container">
-        <a href="index.html" class="back-button">&laquo; Voltar para a Lista</a>
-    </div>
-
-    <div class="container">
-        <div id="loading-details">Carregando detalhes do anime...</div>
-        <div id="error-details" style="display: none;"></div>
-        <div id="anime-details-content" style="display: none;">
-            <div class="anime-cover-container">
-                <img id="anime-cover" src="" alt="Capa do Anime">
+    <div class="details-container-main">
+        <div id="loading-details" class="loading-message-details">Carregando detalhes...</div>
+        <div id="error-details" class="error-message-details" style="display: none;"></div>
+        
+        <div id="item-details-content" style="display: none;">
+            <div class="details-grid">
+                <div class="details-cover-container">
+                    <img id="item-cover" src="" alt="Capa do Item">
+                </div>
+                <div class="details-info-major">
+                    <h2 id="item-title-main"></h2>
+                    <div class="info-chips">
+                        <span class="chip" id="item-type-chip"></span>
+                        <span class="chip" id="item-status-chip"></span>
+                        <span class="chip" id="item-year-chip"></span>
+                    </div>
+                    <p class="info-item score" id="item-score-container">
+                        <span class="material-icons">star</span>
+                        <strong>Nota:</strong> <span id="item-score"></span>
+                    </p>
+                    <p class="info-item" id="item-episodes-chapters-p">
+                        <span class="material-icons">list_alt</span>
+                        <strong id="episodes-chapters-label">Episódios:</strong> <span id="item-episodes-chapters"></span>
+                    </p>
+                    <p class="info-item" id="item-duration-volumes-p">
+                        <span class="material-icons">timer</span>
+                        <strong id="duration-volumes-label">Duração:</strong> <span id="item-duration-volumes"></span>
+                    </p>
+                     <p class="info-item" id="item-rating-p" style="display:none;">
+                        <span class="material-icons">child_care</span>
+                        <strong>Classificação:</strong> <span id="item-rating"></span>
+                    </p>
+                </div>
             </div>
-            <div class="anime-info-container">
-                <h2 id="anime-title"></h2>
-                <p class="info-item"><strong>Nota:</strong> <span id="anime-score"></span></p>
-                <p class="info-item"><strong>Episódios:</strong> <span id="anime-episodes"></span></p>
-                <p class="info-item"><strong>Status:</strong> <span id="anime-status"></span></p>
-                <p class="info-item"><strong>Ano:</strong> <span id="anime-year"></span></p>
-                <p class="info-item"><strong>Temporada:</strong> <span id="anime-season"></span></p>
-                <p class="info-item"><strong>Tipo:</strong> <span id="anime-type"></span></p>
-                <p class="info-item"><strong>Fonte:</strong> <span id="anime-source"></span></p>
-                <p class="info-item"><strong>Duração:</strong> <span id="anime-duration"></span></p>
-                <p class="info-item"><strong>Classificação Etária:</strong> <span id="anime-rating"></span></p>
-                <p class="info-item"><strong>Estúdios:</strong> <span id="anime-studios"></span></p>
-                
-                <div class="info-item">
-                    <strong>Gêneros:</strong>
-                    <ul id="anime-genres-tags" class="tag-list"></ul>
-                </div>
-                 <div class="info-item">
-                    <strong>Temas:</strong>
-                    <ul id="anime-themes-tags" class="tag-list"></ul>
-                </div>
 
-                <div class="synopsis">
-                    <h3>Sinopse</h3>
-                    <p id="anime-synopsis"></p>
-                </div>
-                <div class="trailer-container">
-                    <h3>Trailer</h3>
-                    <div id="anime-trailer"></div>
-                </div>
+            <div class="details-section synopsis-section">
+                <h3><span class="material-icons">subject</span> Sinopse</h3>
+                <p id="item-synopsis"></p>
+            </div>
+
+            <div class="details-section trailer-section" id="item-trailer-wrapper" style="display:none;">
+                <h3><span class="material-icons">smart_display</span> Trailer</h3>
+                <div id="item-trailer-embed"></div>
+            </div>
+
+            <div class="details-section additional-info-section">
+                 <h3><span class="material-icons">info</span> Mais Informações</h3>
+                 <div class="additional-info-grid">
+                    <p class="info-item"><span class="material-icons">translate</span> <strong>Título Japonês:</strong> <span id="item-title-japanese"></span></p>
+                    <p class="info-item"><span class="material-icons">category</span> <strong>Fonte Original:</strong> <span id="item-source"></span></p>
+                    <p class="info-item" id="item-studios-authors-p"><span class="material-icons">business</span> <strong id="studios-authors-label">Estúdios/Autores:</strong> <span id="item-studios-authors"></span></p>
+                    <p class="info-item" id="item-season-p" style="display:none;"><span class="material-icons">wb_sunny</span> <strong>Temporada de Exibição:</strong> <span id="item-season"></span></p>
+                    <p class="info-item"><span class="material-icons">event</span> <strong id="aired-published-label">Período:</strong> <span id="item-aired-string"></span></p>
+                    <p class="info-item"><span class="material-icons">people</span> <strong>Popularidade:</strong> #<span id="item-popularity"></span></p>
+                    <p class="info-item"><span class="material-icons">leaderboard</span> <strong>Rank:</strong> #<span id="item-rank"></span></p>
+                 </div>
+            </div>
+            
+            <div class="details-section tags-section" id="genres-section-wrapper" style="display:none;">
+                <h3><span class="material-icons">label</span> Gêneros</h3>
+                <ul id="item-genres-tags" class="tag-list-details"></ul>
+            </div>
+            <div class="details-section tags-section" id="themes-section-wrapper" style="display:none;">
+                <h3><span class="material-icons">sell</span> Temas</h3>
+                <ul id="item-themes-tags" class="tag-list-details"></ul>
+            </div>
+            <div class="details-section tags-section" id="demographics-section-wrapper" style="display:none;">
+                <h3><span class="material-icons">groups</span> Demografia</h3>
+                <ul id="item-demographics-tags" class="tag-list-details"></ul>
+            </div>
+
+            <div class="details-section recommendations-section" id="item-recommendations-wrapper" style="display:none;">
+                <h3><span class="material-icons">thumb_up_alt</span> Itens Parecidos (Recomendações)</h3>
+                <ul class="recommendations-list" id="item-recommendations-list"></ul>
+                <p id="no-recommendations-message" style="display:none; text-align: center; color: var(--text-secondary);">Nenhuma recomendação disponível para este item.</p>
+            </div>
+
+            <div class="details-section main-characters-section" id="main-characters-wrapper" style="display:none;">
+                <h3><span class="material-icons">people_alt</span> Personagens Principais</h3>
+                <ul class="characters-list" id="main-characters-list"></ul>
+                <p id="no-main-characters-message" style="display:none; text-align: center; color: var(--text-secondary);">
+                    Nenhum personagem principal listado para este item.
+                </p>
             </div>
         </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const API_BASE_URL = 'http://127.0.0.1:5000/api';
+            const THEME_KEY_DETAILS = 'user-theme-preference';
+            function applyDetailsTheme(theme) {
+                if (theme === 'dark') { document.body.classList.add('dark-mode'); } 
+                else { document.body.classList.remove('dark-mode'); }
+            }
+            function loadDetailsTheme() {
+                let preferredTheme = null;
+                try { preferredTheme = localStorage.getItem(THEME_KEY_DETAILS); } catch (e) { console.warn("Erro ao ler tema.", e); }
+                const systemPrefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+                if (preferredTheme) applyDetailsTheme(preferredTheme);
+                else if (systemPrefersDark) applyDetailsTheme('dark');
+                else applyDetailsTheme('light'); 
+            }
+            loadDetailsTheme();
+
+            const API_BASE_URL_DETAILS = '/api'; 
             const params = new URLSearchParams(window.location.search);
-            const animeId = params.get('id');
+            const itemId = params.get('id');
+            const itemType = params.get('type') || 'anime'; 
 
             const loadingElement = document.getElementById('loading-details');
             const errorElement = document.getElementById('error-details');
-            const contentElement = document.getElementById('anime-details-content');
+            const contentElement = document.getElementById('item-details-content');
+            const pageMainTitleElement = document.getElementById('details-main-title');
 
-            if (!animeId) {
-                loadingElement.style.display = 'none';
-                errorElement.textContent = 'ID do anime não fornecido na URL.';
-                errorElement.style.display = 'block';
-                return;
-            }
-
-            async function fetchAnimeDetails() {
-                try {
-                    const response = await fetch(`${API_BASE_URL}/anime/details/${animeId}`);
-                    if (!response.ok) {
-                        throw new Error(`Erro HTTP: ${response.status} - ${response.statusText}`);
-                    }
-                    const result = await response.json();
-                    const anime = result.data;
-
-                    if (!anime || !anime.mal_id) { // Verifica se anime e mal_id existem
-                        throw new Error('Dados do anime não encontrados ou incompletos.');
-                    }
-                    
-                    displayAnimeDetails(anime);
-                    loadingElement.style.display = 'none';
-                    contentElement.style.display = 'flex'; // Alterado para flex para layout correto
-
-                } catch (error) {
-                    console.error('Erro ao buscar detalhes do anime:', error);
-                    loadingElement.style.display = 'none';
-                    errorElement.textContent = `Não foi possível carregar os detalhes do anime. ${error.message}`;
-                    errorElement.style.display = 'block';
-                }
-            }
-
-            function displayAnimeDetails(anime) {
-                document.title = anime.title || 'Detalhes do Anime'; // Atualiza título da página
-                document.getElementById('anime-title').textContent = anime.title || 'Título não disponível';
-                document.getElementById('anime-cover').src = anime.cover_url || 'https://via.placeholder.com/300x450.png?text=Sem+Capa';
-                document.getElementById('anime-cover').alt = `Capa de ${anime.title}`;
-                
-                document.getElementById('anime-score').textContent = anime.score ? `${anime.score.toFixed(1)} (por ${anime.scored_by || 0} usuários)` : 'N/A';
-                document.getElementById('anime-episodes').textContent = anime.episodes || 'N/A';
-                document.getElementById('anime-status').textContent = anime.status || 'N/A';
-                document.getElementById('anime-year').textContent = anime.year || 'N/A';
-                document.getElementById('anime-season').textContent = anime.season ? `${anime.season.charAt(0).toUpperCase() + anime.season.slice(1)}` : 'N/A';
-                document.getElementById('anime-type').textContent = anime.type || 'N/A';
-                document.getElementById('anime-source').textContent = anime.source || 'N/A';
-                document.getElementById('anime-duration').textContent = anime.duration || 'N/A';
-                document.getElementById('anime-rating').textContent = anime.rating || 'N/A';
-                document.getElementById('anime-studios').textContent = anime.studios && anime.studios.length > 0 ? anime.studios.join(', ') : 'N/A';
-                
-                document.getElementById('anime-synopsis').textContent = anime.synopsis || 'Sinopse não disponível.';
-
-                const trailerDiv = document.getElementById('anime-trailer');
-                if (anime.trailer_url && anime.trailer_url.includes("youtube.com/embed")) {
-                    trailerDiv.innerHTML = `<iframe src="${anime.trailer_url.replace('http://', 'https://')}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
-                } else if (anime.trailer_url) {
-                     // Se não for um link de embed direto, mas um link para o vídeo no youtube
-                    const youtubeIdMatch = anime.trailer_url.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/);
+            const recommendationsWrapper = document.getElementById('item-recommendations-wrapper');
+            const charactersWrapper = document.getElementById('main-characters-wrapper');
+            
+            // --- FUNÇÕES AUXILIARES PARA ESTA PÁGINA ---
+            function setupTrailer(trailerUrl) {
+                const trailerDiv = document.getElementById('item-trailer-embed');
+                if (!trailerDiv) return;
+                if (trailerUrl && trailerUrl.includes("youtube.com/embed/")) { // Link de embed direto da Jikan (às vezes googleusercontent)
+                    // Garante https
+                    let secureTrailerUrl = trailerUrl.startsWith('http:') ? trailerUrl.replace('http:', 'https:') : trailerUrl;
+                    trailerDiv.innerHTML = `<iframe src="${secureTrailerUrl}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+                } else if (trailerUrl) { 
+                    const youtubeIdMatch = trailerUrl.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/);
                     if (youtubeIdMatch && youtubeIdMatch[1]) {
-                        trailerDiv.innerHTML = `<iframe src="https://www.youtube.com/embed/${youtubeIdMatch[1]}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+                         trailerDiv.innerHTML = `<iframe src="https://www.youtube.com/embed/${youtubeIdMatch[1]}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
                     } else {
-                        trailerDiv.innerHTML = `<p><a href="${anime.trailer_url}" target="_blank">Assistir Trailer</a></p>`;
+                       trailerDiv.innerHTML = `<p><a href="${trailerUrl}" target="_blank" rel="noopener noreferrer">Assistir Trailer (Link Externo)</a></p>`;
                     }
-                }
-                else {
+                } else {
                     trailerDiv.innerHTML = '<p>Trailer não disponível.</p>';
                 }
+            }
 
-                // Tags de Gêneros
-                const genresTagsUl = document.getElementById('anime-genres-tags');
-                genresTagsUl.innerHTML = ''; // Limpa
-                if (anime.genres && anime.genres.length > 0) {
-                    anime.genres.forEach(genreName => {
-                        const li = document.createElement('li');
-                        li.textContent = genreName;
-                        genresTagsUl.appendChild(li);
+            function populateTags(ulElementId, tagsArray, sectionWrapperElement) {
+                const ul = document.getElementById(ulElementId);
+                if (!ul || !sectionWrapperElement) return;
+                ul.innerHTML = ''; 
+                if (tagsArray && Array.isArray(tagsArray) && tagsArray.length > 0) {
+                    tagsArray.forEach(tagName => {
+                        if(tagName) { // Garante que tagName não é null ou undefined
+                            const li = document.createElement('li');
+                            li.textContent = tagName;
+                            ul.appendChild(li);
+                        }
                     });
+                    sectionWrapperElement.style.display = 'block';
                 } else {
-                    genresTagsUl.innerHTML = '<li>N/A</li>';
-                }
-
-                // Tags de Temas
-                const themesTagsUl = document.getElementById('anime-themes-tags');
-                themesTagsUl.innerHTML = ''; // Limpa
-                if (anime.themes && anime.themes.length > 0) {
-                    anime.themes.forEach(themeName => {
-                        const li = document.createElement('li');
-                        li.textContent = themeName;
-                        themesTagsUl.appendChild(li);
-                    });
-                } else {
-                     themesTagsUl.innerHTML = '<li>N/A</li>';
+                    sectionWrapperElement.style.display = 'none';
                 }
             }
 
-            fetchAnimeDetails();
+            function displayItemDetails(item) {
+                if(!item) { /* ... (tratamento de erro) ... */ return; }
+                document.title = item.title || `Detalhes`;
+                if(pageMainTitleElement) pageMainTitleElement.textContent = item.title || `Detalhes`;
+
+                if(document.getElementById('item-title-main')) document.getElementById('item-title-main').textContent = item.title || 'N/A';
+                if(document.getElementById('item-cover')) {
+                    document.getElementById('item-cover').src = item.cover_url || 'https://via.placeholder.com/300x450.png?text=Sem+Capa';
+                    document.getElementById('item-cover').alt = `Capa de ${item.title || 'item'}`;
+                }
+                if(document.getElementById('item-score')) document.getElementById('item-score').textContent = item.score ? `${(typeof item.score === 'number' ? item.score.toFixed(1) : item.score)} (por ${item.scored_by || 0} usuários)` : 'N/A';
+                
+                const episodesChaptersP = document.getElementById('item-episodes-chapters-p');
+                const episodesChaptersLabel = document.getElementById('episodes-chapters-label');
+                const episodesChaptersSpan = document.getElementById('item-episodes-chapters');
+                const durationVolumesP = document.getElementById('item-duration-volumes-p');
+                const durationVolumesLabel = document.getElementById('duration-volumes-label');
+                const durationVolumesSpan = document.getElementById('item-duration-volumes');
+                const studiosAuthorsP = document.getElementById('item-studios-authors-p');
+                const studiosAuthorsLabel = document.getElementById('studios-authors-label');
+                const studiosAuthorsSpan = document.getElementById('item-studios-authors');
+                const seasonP = document.getElementById('item-season-p');
+                const ratingP = document.getElementById('item-rating-p');
+                // const trailerWrapper = document.getElementById('item-trailer-wrapper'); // Já definido globalmente no script
+
+                const isActualAnime = (itemType === 'anime'); // itemType da URL já é normalizado
+                const isActualManga = (itemType === 'manga');
+
+                if (isActualAnime) {
+                    if(episodesChaptersLabel) episodesChaptersLabel.textContent = 'Episódios:';
+                    if(episodesChaptersSpan) episodesChaptersSpan.textContent = item.episodes_or_chapters || 'N/A';
+                    if(durationVolumesLabel) durationVolumesLabel.textContent = 'Duração:';
+                    if(durationVolumesSpan) durationVolumesSpan.textContent = item.duration_or_volumes || 'N/A';
+                    if(durationVolumesP) durationVolumesP.style.display = 'flex';
+                    if(studiosAuthorsLabel) studiosAuthorsLabel.textContent = 'Estúdios:';
+                    if(studiosAuthorsSpan) studiosAuthorsSpan.textContent = item.studios_or_authors && item.studios_or_authors.length > 0 ? item.studios_or_authors.join(', ') : 'N/A';
+                    if(studiosAuthorsP) studiosAuthorsP.style.display = 'flex';
+                    if(seasonP && item.season) { seasonP.style.display = 'flex'; document.getElementById('item-season').textContent = `${item.season.charAt(0).toUpperCase() + item.season.slice(1)}`; } else if(seasonP) { seasonP.style.display = 'none'; }
+                    if(ratingP && item.rating) { ratingP.style.display = 'flex'; document.getElementById('item-rating').textContent = item.rating; } else if(ratingP) { ratingP.style.display = 'none'; }
+                    if(trailerWrapper && item.trailer_url) { trailerWrapper.style.display = 'block'; setupTrailer(item.trailer_url); } else if(trailerWrapper) { trailerWrapper.style.display = 'none';}
+                } else if (isActualManga) {
+                    // ... (lógica para manga como você tinha) ...
+                } else { /* ... (lógica para character ou default) ... */ }
+
+                if(document.getElementById('item-status-chip')) document.getElementById('item-status-chip').textContent = item.status || 'N/A';
+                if(document.getElementById('item-year-chip')) document.getElementById('item-year-chip').textContent = item.year || 'N/A';
+                if(document.getElementById('item-type-chip')) document.getElementById('item-type-chip').textContent = item.type || 'N/A';
+                if(document.getElementById('item-title-japanese')) document.getElementById('item-title-japanese').textContent = item.title_japanese || 'N/A';
+                if(document.getElementById('item-source')) document.getElementById('item-source').textContent = item.source || 'N/A';
+                if(document.getElementById('aired-published-label') && document.getElementById('item-aired-string')) { /* ... */ }
+                if(document.getElementById('item-popularity')) document.getElementById('item-popularity').textContent = item.popularity || 'N/A';
+                if(document.getElementById('item-rank')) document.getElementById('item-rank').textContent = item.rank || 'N/A';
+                if(document.getElementById('item-synopsis')) document.getElementById('item-synopsis').textContent = item.synopsis || 'Sinopse não disponível.';
+                
+                populateTags('item-genres-tags', item.genres, document.getElementById('genres-section-wrapper'));
+                populateTags('item-themes-tags', item.themes, document.getElementById('themes-section-wrapper'));
+                populateTags('item-demographics-tags', item.demographics, document.getElementById('demographics-section-wrapper'));
+            }
+
+            async function fetchAndDisplayMainCharacters(currentAnimeId) {
+                if (!charactersWrapper || !charactersListElement || !noCharactersMessage) {
+                    console.warn("Elementos da seção de personagens principais não encontrados.");
+                    if(charactersWrapper) charactersWrapper.style.display = 'none';
+                    return;
+                }
+                console.log(`[DETAILS.JS] Buscando personagens principais para anime ID: ${currentAnimeId}`);
+                charactersListElement.innerHTML = ''; // Limpa antes de nova busca
+                noCharactersMessage.style.display = 'none'; // Esconde mensagem
+
+                try {
+                    const response = await fetch(`${API_BASE_URL_DETAILS}/anime/${currentAnimeId}/main_characters`);
+                    if (!response.ok) {
+                        const errorData = await response.json().catch(() => ({}));
+                        console.error(`Erro HTTP ${response.status} ao buscar personagens: ${errorData.message || response.statusText}`);
+                        charactersWrapper.style.display = 'block'; // Mostra a seção para exibir erro
+                        noCharactersMessage.textContent = 'Não foi possível carregar os personagens.';
+                        noCharactersMessage.style.display = 'block';
+                        return;
+                    }
+                    const result = await response.json();
+
+                    if (result.success && result.data && result.data.length > 0) {
+                        charactersWrapper.style.display = 'block';
+                        result.data.slice(0, 10).forEach(char => { // Limita a 10 personagens
+                            const charCard = document.createElement('li');
+                            charCard.classList.add('character-card'); 
+                            const characterMalUrl = `https://myanimelist.net/character/${char.mal_id}`;
+
+                            charCard.innerHTML = `
+                                <a href="${characterMalUrl}" target="_blank" title="${char.name} (${char.role})">
+                                    <img src="${char.image_url || 'https://via.placeholder.com/100x150.png?text=N/A'}" alt="Imagem de ${char.name}">
+                                    <p class="character-name">${char.name}</p>
+                                    <p class="character-role">${char.role}</p>
+                                </a>
+                            `;
+                            charactersListElement.appendChild(charCard);
+                        });
+                    } else {
+                        console.log("Nenhum personagem principal encontrado ou dados ausentes da API.");
+                        charactersWrapper.style.display = 'block';
+                        noCharactersMessage.textContent = 'Nenhum personagem principal listado para este anime.';
+                        noCharactersMessage.style.display = 'block';
+                    }
+                } catch (error) {
+                    console.error("Erro na função fetchAndDisplayMainCharacters:", error);
+                    if(charactersWrapper) charactersWrapper.style.display = 'block';
+                    if(noCharactersMessage) {
+                        noCharactersMessage.textContent = 'Erro ao carregar personagens.';
+                        noCharactersMessage.style.display = 'block';
+                    }
+                }
+            }            
+            async function fetchAndDisplayMainCharacters(currentAnimeId) {
+                if (!charactersWrapper || !charactersListElement || !noCharactersMessage) {
+                    console.warn("Elementos da seção de personagens principais não encontrados.");
+                    if(charactersWrapper) charactersWrapper.style.display = 'none';
+                    return;
+                }
+                console.log(`[DETAILS.JS] Buscando personagens principais para anime ID: ${currentAnimeId}`);
+                charactersListElement.innerHTML = ''; // Limpa antes de nova busca
+                noCharactersMessage.style.display = 'none'; // Esconde mensagem
+
+                try {
+                    const response = await fetch(`${API_BASE_URL_DETAILS}/anime/${currentAnimeId}/main_characters`);
+                    if (!response.ok) {
+                        const errorData = await response.json().catch(() => ({}));
+                        console.error(`Erro HTTP ${response.status} ao buscar personagens: ${errorData.message || response.statusText}`);
+                        charactersWrapper.style.display = 'block'; // Mostra a seção para exibir erro
+                        noCharactersMessage.textContent = 'Não foi possível carregar os personagens.';
+                        noCharactersMessage.style.display = 'block';
+                        return;
+                    }
+                    const result = await response.json();
+
+                    if (result.success && result.data && result.data.length > 0) {
+                        charactersWrapper.style.display = 'block';
+                        result.data.slice(0, 10).forEach(char => { // Limita a 10 personagens
+                            const charCard = document.createElement('li');
+                            charCard.classList.add('character-card'); 
+                            const characterMalUrl = `https://myanimelist.net/character/${char.mal_id}`;
+
+                            charCard.innerHTML = `
+                                <a href="${characterMalUrl}" target="_blank" title="${char.name} (${char.role})">
+                                    <img src="${char.image_url || 'https://via.placeholder.com/100x150.png?text=N/A'}" alt="Imagem de ${char.name}">
+                                    <p class="character-name">${char.name}</p>
+                                    <p class="character-role">${char.role}</p>
+                                </a>
+                            `;
+                            charactersListElement.appendChild(charCard);
+                        });
+                    } else {
+                        console.log("Nenhum personagem principal encontrado ou dados ausentes da API.");
+                        charactersWrapper.style.display = 'block';
+                        noCharactersMessage.textContent = 'Nenhum personagem principal listado para este anime.';
+                        noCharactersMessage.style.display = 'block';
+                    }
+                } catch (error) {
+                    console.error("Erro na função fetchAndDisplayMainCharacters:", error);
+                    if(charactersWrapper) charactersWrapper.style.display = 'block';
+                    if(noCharactersMessage) {
+                        noCharactersMessage.textContent = 'Erro ao carregar personagens.';
+                        noCharactersMessage.style.display = 'block';
+                    }
+                }
+            }            
+            // --- FUNÇÃO PRINCIPAL PARA BUSCAR DETALHES DO ITEM E DEPOIS OS EXTRAS ---
+            async function fetchItemPrimaryDetails() {
+                if (!itemId) {
+                    if(loadingElement) loadingElement.style.display = 'none';
+                    if(errorElement) { errorElement.textContent = 'ID do item não fornecido na URL.'; errorElement.style.display = 'block'; }
+                    if(pageMainTitleElement) pageMainTitleElement.textContent = "Erro";
+                    if(recommendationsWrapper) recommendationsWrapper.style.display = 'none';
+                    if(charactersWrapper) charactersWrapper.style.display = 'none';
+                    return;
+                }
+                if(loadingElement) loadingElement.style.display = 'block';
+                if(errorElement) errorElement.style.display = 'none';
+                if(contentElement) contentElement.style.display = 'none';
+                if(recommendationsWrapper) recommendationsWrapper.style.display = 'none'; // Esconde wrappers no início
+                if(charactersWrapper) charactersWrapper.style.display = 'none';   // Esconde wrappers no início
+
+                try {
+                    const response = await fetch(`${API_BASE_URL_DETAILS}/${itemType}/details/${itemId}`);
+                    if (!response.ok) {
+                        const errorData = await response.json().catch(() => ({message: "Erro ao processar resposta do servidor."}));
+                        throw new Error(`Erro HTTP ${response.status}: ${errorData.message || response.statusText}`);
+                    }
+                    const result = await response.json();
+                    if (!result.success || !result.data || !result.data.mal_id) {
+                        throw new Error(result.message || 'Dados do item não encontrados ou incompletos na resposta da API.');
+                    }
+                    const item = result.data;
+                    
+                    displayItemDetails(item); // Preenche os detalhes principais
+                    if(loadingElement) loadingElement.style.display = 'none';
+                    if(contentElement) contentElement.style.display = 'block'; 
+
+                    // Chama as seções extras APENAS se for um anime e os detalhes principais carregaram
+                    if (itemType === 'anime' && item.mal_id) {
+                        if (recommendationsWrapper) fetchAndDisplayRecommendations(item.mal_id);
+                        // if (charactersWrapper) fetchAndDisplayMainCharacters(item.mal_id);
+                    }
+                } catch (error) {
+                    console.error(`Erro em fetchItemPrimaryDetails para ${itemType} ID ${itemId}:`, error);
+                    if(loadingElement) loadingElement.style.display = 'none';
+                    if(errorElement) { errorElement.textContent = `Não foi possível carregar os detalhes: ${error.message}`; errorElement.style.display = 'block';}
+                    if(pageMainTitleElement) pageMainTitleElement.textContent = "Erro ao Carregar";
+                    if(recommendationsWrapper) recommendationsWrapper.style.display = 'none';
+                    if(charactersWrapper) charactersWrapper.style.display = 'none';
+                }
+            }
+            
+            // Inicia o processo
+            fetchItemPrimaryDetails(); 
         });
     </script>
 </body>

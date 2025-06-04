@@ -24,12 +24,11 @@ def _make_request(url, params=None):
         print(f"An unexpected error occurred: {e} - URL: {full_url_for_log}")
         return None
 
-def get_genres(item_type="anime"):
-    # alteração - > o item.type precisa ser singular para chamada 
-
-    if item_type == "animes": 
+def get_genres(item_type="anime"): 
+    jikan_api_type = item_type 
+    if item_type == "animes":  
         jikan_api_type = "anime"
-    elif item_type == "mangas":
+    elif item_type == "mangas": 
         jikan_api_type = "manga"
     
     data = _make_request(f"{BASE_URL_V4}/genres/{jikan_api_type}")
@@ -40,7 +39,7 @@ def get_items_by_genre(item_type="anime", genre_id=None, page=1, limit=14,
     
     jikan_api_type = item_type 
     if item_type == "character" or item_type == "characters":
-        jikan_api_type = "characters" # EndPoint de personagens mas precisa ser adicionado ainda
+        jikan_api_type = "characters" 
     elif item_type == "animes":
         jikan_api_type = "anime"
     elif item_type == "mangas":
@@ -201,6 +200,27 @@ def get_item_details(item_type="anime", item_id=None):
         
     return details
 
+def get_anime_recommendations(anime_id):
+    if not anime_id: return None
+    endpoint = f"{BASE_URL_V4}/anime/{anime_id}/recommendations"
+    print(f"[JIKAN_CLIENT get_anime_recommendations] Chamando Jikan: {endpoint}")
+    data = _make_request(endpoint)
+
+    if not data or 'data' not in data:
+        print(f"[JIKAN_CLIENT get_anime_recommendations] Jikan não retornou dados ou 'data' ausente para ID {anime_id}")
+        return [] 
+    recommendations_data = data.get('data', [])
+    formatted_recommendations = []
+    for rec_entry in recommendations_data:
+        entry = rec_entry.get('entry')
+        if entry:
+            formatted_recommendations.append({
+                'mal_id': entry.get('mal_id'),
+                'title': entry.get('title'),
+                'cover_url': entry.get('images', {}).get('jpg', {}).get('large_image_url') or \
+                             entry.get('images', {}).get('jpg', {}).get('image_url'),
+            })
+    return formatted_recommendations   
 
 def get_top_items(item_type="anime", page=1, limit=14, filter_type=None):
     jikan_api_type = item_type
@@ -243,3 +263,29 @@ def get_top_items(item_type="anime", page=1, limit=14, filter_type=None):
             'type': item.get('type')
         })
     return formatted_list, pagination_info
+
+def get_anime_main_characters(anime_id):
+    """Busca os personagens principais de um anime específico."""
+    if not anime_id:
+        return [] # Retorna lista vazia se não houver ID
+    
+    endpoint = f"{BASE_URL_V4}/anime/{anime_id}/characters"
+    print(f"[JIKAN_CLIENT get_anime_main_characters] Chamando Jikan: {endpoint}")
+    data = _make_request(endpoint)
+
+    if not data or 'data' not in data:
+        print(f"[JIKAN_CLIENT get_anime_main_characters] Jikan não retornou dados ou 'data' ausente para personagens do anime ID {anime_id}")
+        return []
+
+    main_characters = []
+    for char_entry in data.get('data', []):
+        if char_entry.get('role') == "Main":
+            character_info = char_entry.get('character', {})
+            if character_info.get('mal_id'):
+                main_characters.append({
+                    'mal_id': character_info.get('mal_id'),
+                    'name': character_info.get('name'),
+                    'image_url': character_info.get('images', {}).get('jpg', {}).get('image_url'), # Personagens geralmente usam 'image_url'
+                    'role': char_entry.get('role'),      
+                })  
+    return main_characters    
