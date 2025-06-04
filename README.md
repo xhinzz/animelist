@@ -6,7 +6,7 @@
   <img src="https://i.imgur.com/9fGul5a.png" alt="Logo do Projeto" width="750">
 </p>
 
-# Catálogo de Animes e Mangás (AnimeTest)
+# Catálogo de Animes e Mangás (AnimeList)
 
 Uma aplicação web construída com Flask para navegar, buscar e catalogar animes e mangás, utilizando a API Jikan. O projeto inclui funcionalidades como contas de usuário, upload de fotos de perfil, lista de itens assistidos, modo escuro e opções de ordenação.
 
@@ -202,7 +202,7 @@ WantedBy=multi-user.target
 server {
     listen 80;
     listen [::]:80;
-    server_name seu_dominio.com; # Ex: testeml.no-ip.net
+    server_name seu_dominio.com; # 
 
     location /.well-known/acme-challenge/ {
         root /var/www/html; # Diretório para validação do Certbot
